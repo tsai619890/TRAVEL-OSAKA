@@ -17,11 +17,9 @@
     <style>
         body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
         
-        /* 修改這裡：暴力加高頂部安全區域 */
-        /* env(safe-area-inset-top) 是系統給的安全值，再額外 +40px 確保避開動態島觸控死區 */
-        /* 使用 !important 確保不被 Tailwind 的 p-4 覆蓋 */
+        /* 修改這裡：頂部安全區域減半，約為 20px */
         .safe-top { 
-            padding-top: calc(env(safe-area-inset-top) + 40px) !important; 
+            padding-top: calc(env(safe-area-inset-top) + 20px) !important; 
             height: auto;
         }
         
@@ -583,24 +581,31 @@
                     {showSavedToast && <div className="fixed bottom-20 left-4 bg-teal-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-50 animate-toast flex items-center gap-1"><LucideIcon name="Check" size={12}/> 已儲存 {syncStatus==='syncing' && '(同步中...)'}</div>}
                     
                     {/* Fixed Header - Added pt-safe for top area */}
-                    <header className="bg-teal-600 text-white p-4 shadow-lg fixed top-0 left-0 right-0 z-40 safe-top flex justify-between items-center">
-                        <div>
+                    <header className="bg-teal-600 text-white p-4 shadow-lg fixed top-0 left-0 right-0 z-40 safe-top flex justify-between items-end">
+                        <div className="w-1/2">
                             <div className="flex items-center gap-2 mb-1"><LucideIcon name="Plane" className="text-teal-200"/><input value={trip.tripName} onChange={e => setTrip(p => ({...p, tripName: e.target.value}))} className="bg-transparent font-bold text-xl outline-none border-b border-teal-300 w-full md:w-auto"/></div>
                             <div className="text-teal-100 text-sm flex items-center gap-2"><input type="date" value={trip.startDate} onChange={e => setTrip(p => ({...p, startDate: e.target.value}))} className="bg-transparent outline-none"/><span>• {trip.days} 天</span></div>
                         </div>
-                        <div className="flex gap-3 items-center">
-                            <button onClick={openAuthModal} className={`p-2 rounded-full transition-colors ${user ? 'bg-teal-500 text-white' : 'bg-white/20 hover:bg-white/30'}`} title="雲端同步">
-                                <LucideIcon name="Cloud" />
+                        
+                        {/* Right side buttons - compact grid for mobile */}
+                        <div className="grid grid-cols-3 gap-1.5 justify-items-end">
+                             {/* Row 1 */}
+                             <button onClick={openAuthModal} className={`p-1.5 rounded-full transition-colors ${user ? 'bg-teal-500 text-white' : 'bg-white/20 hover:bg-white/30'}`} title="雲端同步">
+                                <LucideIcon name="Cloud" size={18} />
                             </button>
-                            <button onClick={openMemoModal} className="p-2 rounded-full bg-white/20 hover:bg-white/30" title="筆記"><LucideIcon name="StickyNote"/></button>
-                            <button onClick={()=> {setModalType('stats'); setIsModalOpen(true)}} className="p-2 rounded-full bg-white/20 hover:bg-white/30"><LucideIcon name="PieChart"/></button>
-                            <button onClick={()=> {setModalType('settings'); setIsModalOpen(true)}} className="p-2 rounded-full bg-white/20 hover:bg-white/30"><LucideIcon name="Settings"/></button>
-                            <button onClick={() => setIsSummaryView(!isSummaryView)} className={`p-2 rounded-full flex gap-1 items-center ${isSummaryView?'bg-white/30 ring-2':'bg-white/20'}`}>{isSummaryView ? <LucideIcon name="ArrowLeft"/> : <LucideIcon name="List"/>}</button>
+                            <button onClick={openMemoModal} className="p-1.5 rounded-full bg-white/20 hover:bg-white/30" title="筆記"><LucideIcon name="StickyNote" size={18}/></button>
+                            <button onClick={()=> {setModalType('stats'); setIsModalOpen(true)}} className="p-1.5 rounded-full bg-white/20 hover:bg-white/30"><LucideIcon name="PieChart" size={18}/></button>
+                            
+                             {/* Row 2 */}
+                             <div className="col-start-2">
+                                <button onClick={()=> {setModalType('settings'); setIsModalOpen(true)}} className="p-1.5 rounded-full bg-white/20 hover:bg-white/30"><LucideIcon name="Settings" size={18}/></button>
+                            </div>
+                            <button onClick={() => setIsSummaryView(!isSummaryView)} className={`p-1.5 rounded-full flex gap-1 items-center ${isSummaryView?'bg-white/30 ring-2':'bg-white/20'}`}>{isSummaryView ? <LucideIcon name="ArrowLeft" size={18}/> : <LucideIcon name="List" size={18}/>}</button>
                         </div>
                     </header>
 
-                    {/* Main Content with top padding to push it below fixed header */}
-                    <main className="max-w-4xl mx-auto p-4 md:flex gap-6 mt-4 pt-48">
+                    {/* Main Content with top padding to push it below fixed header - adjusted for new header height */}
+                    <main className="max-w-4xl mx-auto p-4 md:flex gap-6 mt-4 pt-40">
                         {isSummaryView ? (
                             <div className="w-full space-y-6">
                                 <h2 className="text-xl font-bold px-2">行程總覽 (拖曳排序)</h2>
