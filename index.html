@@ -6,13 +6,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0d9488">
-    <title>旅遊行程規劃</title>
+    <title>旅遊行程規劃 (雲端版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
         .safe-top { padding-top: env(safe-area-inset-top); }
@@ -20,7 +21,9 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-modal { animation: fadeIn 0.15s ease-out forwards; }
+        .animate-toast { animation: slideUp 0.3s ease-out forwards; }
         .dragging { opacity: 0.5; background: #f0fdfa; border: 2px dashed #0d9488; }
         .prose h3 { font-size: 1.1rem; font-weight: bold; margin-top: 1rem; color: #0f766e; }
         .prose ul { list-style-type: disc; padding-left: 1.2rem; margin-top: 0.5rem; }
@@ -32,9 +35,11 @@
     <div id="root"></div>
     <script type="text/babel">
         const { useState, useEffect, useRef, useMemo } = React;
-        const supabaseUrl = 'https://dtzpkhrbyykceijxbhtd.supabase.co';
-const supabaseKey = 'sb_publishable_rhrApXCDCaVI2bHoiUkpZA_3yCxtss2';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // --- Supabase Configuration ---
+        const SUPABASE_URL = 'https://dtzpkhrbyykceijxbhtd.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_rhrApXCDCaVI2bHoiUkpZA_3yCxtss2'; // 使用者提供的 Key
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const Icon = ({ p, size = 20, className = "" }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{p}</svg>
@@ -70,7 +75,12 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
             Table: <><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></>,
             Link: <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>,
             PieChart: <><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></>,
-            Receipt: <><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17V7"/></>
+            Receipt: <><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17V7"/></>,
+            StickyNote: <><path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"/><path d="M15 3v6h6"/></>,
+            Save: <><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></>,
+            Smartphone: <><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></>,
+            Monitor: <><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></>,
+            Cloud: <><path d="M17.5 19c0-1.7-1.3-3-3-3h-11c-1.7 0-3 1.3-3 3s1.3 3 3 3h11c1.7 0 3-1.3 3-3z"/><path d="M17.5 19c2.5 0 4.5-2 4.5-4.5S19.5 10 17 10c-.3 0-.6.1-.9.1"/><path d="M16.1 10.1C16.5 7.2 18.9 5 21.9 5c3.3 0 6 2.7 6 6s-2.7 6-6 6h-2.5"/><path d="M6 16c-2.2 0-4-1.8-4-4s1.8-4 4-4c.3 0 .6.1.9.1"/><path d="M6.9 8.1C7.3 5.2 9.7 3 12.7 3c3.3 0 6 2.7 6 6s-2.7 6-6 6H9.5"/></>
         };
         const LucideIcon = ({ name, ...p }) => <Icon p={icons[name] || icons.MapPin} {...p} />;
 
@@ -85,7 +95,7 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
             <div>
                 {label && <label className="block text-xs font-bold text-slate-500 mb-1">{label}</label>}
                 <div className="relative">
-                    <span className="absolute left-3 top-2 text-slate-400">$</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
                     <input 
                         type="number" 
                         name="cost" 
@@ -111,6 +121,7 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
             startDate: "2025-02-05", 
             days: 5, 
             currency: "TWD", 
+            memo: "", 
             dayTitles: {
                 "1": "出發與難波探索",
                 "2": "日本環球影城全日",
@@ -206,6 +217,9 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
         function App() {
             const dragItem = useRef();
             const dragOverItem = useRef();
+            const fileInputRef = useRef(null);
+            
+            // State
             const [trip, setTrip] = useState(() => {
                 const saved = localStorage.getItem('travelApp_data');
                 if (saved) { try { const p = JSON.parse(saved); 
@@ -213,11 +227,17 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
                     if(!p.activities) p.activities=[]; 
                     if(!p.expenses) p.expenses=[];
                     if(!p.dayTitles) p.dayTitles={};
+                    if(!p.memo) p.memo = "";
                     return p; } catch (e) { return INITIAL_DATA; } }
                 return INITIAL_DATA;
             });
             const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || "");
+            const [user, setUser] = useState(null);
+            const [authLoading, setAuthLoading] = useState(true);
+            const [syncStatus, setSyncStatus] = useState("idle"); // idle, syncing, done, error
+            const [showSavedToast, setShowSavedToast] = useState(false);
             
+            // View State
             const [currentDay, setCurrentDay] = useState(1);
             const [isSummaryView, setIsSummaryView] = useState(false); 
             const [isModalOpen, setIsModalOpen] = useState(false);
@@ -230,10 +250,108 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
             const [importText, setImportText] = useState(""); 
             const [aiResult, setAiResult] = useState("");
             const [isAiLoading, setIsAiLoading] = useState(false);
+            const [memoText, setMemoText] = useState("");
+            
+            // Auth Form
+            const [authEmail, setAuthEmail] = useState("");
+            const [authPass, setAuthPass] = useState("");
+            const [isLoginMode, setIsLoginMode] = useState(true);
 
-            useEffect(() => { localStorage.setItem('travelApp_data', JSON.stringify(trip)); }, [trip]);
+            // --- Effects ---
+            useEffect(() => {
+                // Check Auth Status
+                const checkUser = async () => {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    setUser(session?.user || null);
+                    setAuthLoading(false);
+                    if (session?.user) loadFromCloud(session.user.id);
+                };
+                checkUser();
+                
+                const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+                    setUser(session?.user || null);
+                    if (session?.user) loadFromCloud(session.user.id);
+                });
+                return () => subscription.unsubscribe();
+            }, []);
+
+            useEffect(() => { 
+                // Local Save
+                localStorage.setItem('travelApp_data', JSON.stringify(trip)); 
+                
+                // Cloud Sync (Auto Save)
+                if (user) {
+                    saveToCloud(trip);
+                }
+
+                setShowSavedToast(true);
+                const timer = setTimeout(() => setShowSavedToast(false), 2000);
+                return () => clearTimeout(timer);
+            }, [trip]);
+            
             useEffect(() => { localStorage.setItem('gemini_api_key', apiKey); }, [apiKey]);
 
+            // --- Cloud Functions ---
+            const loadFromCloud = async (userId) => {
+                setSyncStatus("syncing");
+                const { data, error } = await supabase
+                    .from('trips')
+                    .select('trip_data')
+                    .eq('user_id', userId)
+                    .single();
+                
+                if (data && data.trip_data) {
+                    // Conflict resolution: Simple prompt or just load?
+                    // For now, let's load if local is default, otherwise ask (mock ask by just loading for now to be seamless)
+                    // Better UX: If cloud data exists, ask user if they want to overwrite local
+                    if (JSON.stringify(trip) !== JSON.stringify(INITIAL_DATA) && confirm("發現雲端有備份行程，是否要下載覆蓋目前的進度？")) {
+                        setTrip(data.trip_data);
+                    } else if (JSON.stringify(trip) === JSON.stringify(INITIAL_DATA)) {
+                        setTrip(data.trip_data);
+                    }
+                }
+                setSyncStatus("done");
+                setTimeout(() => setSyncStatus("idle"), 2000);
+            };
+
+            const saveToCloud = async (currentTrip) => {
+                if (!user) return;
+                setSyncStatus("syncing");
+                const { error } = await supabase
+                    .from('trips')
+                    .upsert({ user_id: user.id, trip_data: currentTrip, updated_at: new Date() });
+                
+                if (error) {
+                    console.error("Cloud save failed:", error);
+                    setSyncStatus("error");
+                } else {
+                    setSyncStatus("done");
+                    setTimeout(() => setSyncStatus("idle"), 2000);
+                }
+            };
+
+            const handleAuth = async () => {
+                setAuthLoading(true);
+                if (isLoginMode) {
+                    const { error } = await supabase.auth.signInWithPassword({ email: authEmail, password: authPass });
+                    if (error) alert(error.message);
+                    else { setIsModalOpen(false); alert("登入成功！行程將自動同步。"); }
+                } else {
+                    const { error } = await supabase.auth.signUp({ email: authEmail, password: authPass });
+                    if (error) alert(error.message);
+                    else { alert("註冊成功！請檢查 Email 驗證信。"); setIsLoginMode(true); }
+                }
+                setAuthLoading(false);
+            };
+
+            const handleLogout = async () => {
+                await supabase.auth.signOut();
+                setUser(null);
+                alert("已登出");
+                setIsModalOpen(false);
+            };
+
+            // --- Interaction Handlers ---
             const handleInputChange = (e) => { setFormData({ ...formData, [e.target.name]: e.target.value }); setErrorMsg(""); };
             const handleDragStart = (e, pos) => { dragItem.current = pos; e.target.classList.add('dragging'); };
             const handleDragEnter = (e, pos) => { dragOverItem.current = pos; };
@@ -350,10 +468,51 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
                 setIsModalOpen(false);
             };
 
-            const handleExport = () => { setExportText(JSON.stringify(trip)); setModalType('export'); setIsModalOpen(true); };
-            const doCopyExport = () => { navigator.clipboard.writeText(exportText); alert("複製成功"); };
-            const handleImport = () => { setImportText(""); setErrorMsg(""); setModalType('import'); setIsModalOpen(true); };
-            const doImport = () => { try { const p = JSON.parse(importText); if(p.activities) { if(!p.expenses) p.expenses=[]; setTrip(p); setIsModalOpen(false); } else setErrorMsg("格式錯誤"); } catch(e){ setErrorMsg("格式錯誤"); } };
+            const openMemoModal = () => { setMemoText(trip.memo || ""); setModalType('memo'); setIsModalOpen(true); };
+            const saveMemo = () => { setTrip(prev => ({ ...prev, memo: memoText })); setIsModalOpen(false); };
+
+            const handleBackup = () => { setModalType('backup'); setIsModalOpen(true); };
+            const handleExport = () => { setExportText(JSON.stringify(trip)); setModalType('export'); setIsModalOpen(true); }; 
+            
+            const downloadBackup = () => {
+                const dataStr = JSON.stringify(trip, null, 2);
+                const blob = new Blob([dataStr], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `trip_backup_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            const triggerFileUpload = () => { fileInputRef.current.click(); };
+            const handleFileUpload = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const p = JSON.parse(e.target.result);
+                        if (p.activities) { 
+                            if (!p.expenses) p.expenses = [];
+                            if (!p.memo) p.memo = "";
+                            setTrip(p); 
+                            setIsModalOpen(false); 
+                            alert("讀取成功！"); 
+                        } else { setErrorMsg("檔案格式錯誤"); }
+                    } catch (err) { setErrorMsg("無效的檔案"); }
+                };
+                reader.readAsText(file);
+            };
+
+            const openAuthModal = () => { setModalType('auth'); setIsModalOpen(true); };
+
+            // Manual Copy/Paste Handlers
+            const openTransferModal = () => { setExportText(JSON.stringify(trip)); setImportText(""); setErrorMsg(""); setModalType('backup'); setIsModalOpen(true); };
+            const doCopyCode = () => { navigator.clipboard.writeText(exportText); alert("代碼已複製！請貼到 Line 或 Email 傳送。"); };
+            const doPasteCode = () => { try { const p = JSON.parse(importText); if(p.activities) { if(!p.expenses) p.expenses=[]; setTrip(p); setIsModalOpen(false); alert("資料已轉移成功！"); } else setErrorMsg("代碼格式錯誤"); } catch(e){ setErrorMsg("無效的代碼"); } };
+
 
             // Stats
             const statsData = useMemo(() => {
@@ -371,13 +530,19 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
             const currentTitle = trip.dayTitles?.[currentDay] || `Day ${currentDay}`;
 
             return (
-                <div className="min-h-screen supports-[min-h-[100dvh]]:min-h-[100dvh] w-full bg-slate-50 text-slate-800 pb-24 md:pb-0 overscroll-y-none touch-pan-y">
+                <div className="min-h-screen supports-[min-h-[100dvh]]:min-h-[100dvh] w-full bg-slate-50 text-slate-800 pb-24 md:pb-0 overscroll-y-none touch-pan-y relative">
+                    {showSavedToast && <div className="fixed bottom-20 left-4 bg-teal-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-50 animate-toast flex items-center gap-1"><LucideIcon name="Check" size={12}/> 已儲存 {syncStatus==='syncing' && '(同步中...)'}</div>}
+                    
                     <header className="bg-teal-600 text-white p-4 shadow-lg sticky top-0 z-30 safe-top flex justify-between items-center">
                         <div>
                             <div className="flex items-center gap-2 mb-1"><LucideIcon name="Plane" className="text-teal-200"/><input value={trip.tripName} onChange={e => setTrip(p => ({...p, tripName: e.target.value}))} className="bg-transparent font-bold text-xl outline-none border-b border-teal-300 w-full md:w-auto"/></div>
                             <div className="text-teal-100 text-sm flex items-center gap-2"><input type="date" value={trip.startDate} onChange={e => setTrip(p => ({...p, startDate: e.target.value}))} className="bg-transparent outline-none"/><span>• {trip.days} 天</span></div>
                         </div>
                         <div className="flex gap-3 items-center">
+                            <button onClick={openAuthModal} className={`p-2 rounded-full transition-colors ${user ? 'bg-teal-500 text-white' : 'bg-white/20 hover:bg-white/30'}`} title="雲端同步">
+                                <LucideIcon name="Cloud" />
+                            </button>
+                            <button onClick={openMemoModal} className="p-2 rounded-full bg-white/20 hover:bg-white/30" title="筆記"><LucideIcon name="StickyNote"/></button>
                             <button onClick={()=> {setModalType('stats'); setIsModalOpen(true)}} className="p-2 rounded-full bg-white/20 hover:bg-white/30"><LucideIcon name="PieChart"/></button>
                             <button onClick={()=> {setModalType('settings'); setIsModalOpen(true)}} className="p-2 rounded-full bg-white/20 hover:bg-white/30"><LucideIcon name="Settings"/></button>
                             <button onClick={() => setIsSummaryView(!isSummaryView)} className={`p-2 rounded-full flex gap-1 items-center ${isSummaryView?'bg-white/30 ring-2':'bg-white/20'}`}>{isSummaryView ? <LucideIcon name="ArrowLeft"/> : <LucideIcon name="List"/>}</button>
@@ -400,7 +565,7 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
                                         </div>
                                     );
                                 })}
-                                <div className="grid grid-cols-2 gap-4 mt-4"><button onClick={handleExport} className="flex justify-center gap-2 bg-slate-200 text-slate-700 font-bold py-3 rounded-xl"><LucideIcon name="Download"/> 備份</button><button onClick={handleImport} className="flex justify-center gap-2 bg-slate-200 text-slate-700 font-bold py-3 rounded-xl"><LucideIcon name="Upload"/> 還原</button></div>
+                                <div className="mt-4"><button onClick={openTransferModal} className="w-full flex justify-center gap-2 bg-slate-200 text-slate-700 font-bold py-3 rounded-xl"><LucideIcon name="Download"/> 📲 跨裝置轉移 / 備份</button></div>
                             </div>
                         ) : (
                             <>
@@ -491,7 +656,7 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
                     {isModalOpen && (
                         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-modal">
                             <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-                                <div className="bg-slate-50 p-4 border-b flex justify-between shrink-0"><h3 className="font-bold text-lg">{modalType==='delete'?'確認刪除':modalType==='deleteExp'?'刪除花費':modalType==='deleteDay'?'刪除天數':modalType==='export'?'備份':modalType==='import'?'還原':modalType==='sort'?'排序':modalType==='settings'?'設定':modalType==='ai_result'?'AI 建議':modalType==='stats'?'花費統計':modalType==='expense'?'記帳':editingId?'編輯':'新增'}</h3><button onClick={()=>setIsModalOpen(false)} className="text-slate-400">✕</button></div>
+                                <div className="bg-slate-50 p-4 border-b flex justify-between shrink-0"><h3 className="font-bold text-lg">{modalType==='delete'?'確認刪除':modalType==='deleteExp'?'刪除花費':modalType==='deleteDay'?'刪除天數':modalType==='backup'?'📲 跨裝置轉移':modalType==='sort'?'排序':modalType==='settings'?'設定':modalType==='ai_result'?'AI 建議':modalType==='stats'?'花費統計':modalType==='expense'?'記帳':modalType==='memo'?'重要筆記':modalType==='auth'?'雲端登入':editingId?'編輯':'新增'}</h3><button onClick={()=>setIsModalOpen(false)} className="text-slate-400">✕</button></div>
                                 <div className="p-6 space-y-4 overflow-y-auto">
                                     {(modalType==='delete'||modalType==='deleteDay'||modalType==='deleteExp'||modalType==='sort') ? (
                                         <div className="text-center">
@@ -499,10 +664,68 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
                                             <p className="mb-6 text-slate-600">{modalType==='sort'?'自動依時間排序行程？':'確定要刪除嗎？無法復原。'}</p>
                                             <div className="flex gap-3"><button onClick={()=>setIsModalOpen(false)} className="flex-1 py-3 bg-slate-100 rounded-xl font-bold">取消</button><button onClick={modalType==='delete'?doDel:modalType==='deleteExp'?doDelExp:modalType==='sort'?autoSortByTime:doDelDay} className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold">確認</button></div>
                                         </div>
-                                    ) : modalType === 'export' ? (
-                                        <div><textarea className="w-full h-32 bg-slate-100 p-2 rounded text-xs break-all mb-4" readOnly value={exportText} onClick={e=>e.target.select()}></textarea><button onClick={doCopyExport} className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl">複製</button></div>
-                                    ) : modalType === 'import' ? (
-                                        <div><textarea className="w-full h-32 bg-slate-50 border p-2 rounded text-xs mb-2" value={importText} onChange={e=>setImportText(e.target.value)}></textarea><button onClick={doImport} className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl">確定</button></div>
+                                    ) : modalType === 'backup' ? (
+                                        <div className="space-y-6">
+                                            <div className="space-y-2">
+                                                <div className="flex items-center justify-between"><h4 className="font-bold text-teal-800 flex items-center gap-2"><LucideIcon name="Smartphone"/> 1. 從這裡匯出</h4><span className="text-xs bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full">傳送端</span></div>
+                                                <p className="text-xs text-slate-500">將代碼複製後，透過 Line / Email 傳送給另一台裝置。</p>
+                                                <textarea className="w-full h-20 bg-slate-100 p-2 rounded text-xs break-all" readOnly value={exportText} onClick={e=>e.target.select()}></textarea>
+                                                <button onClick={doCopyCode} className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl shadow-lg flex justify-center gap-2"><LucideIcon name="Copy"/> 複製行程代碼</button>
+                                            </div>
+                                            <div className="border-t border-slate-200"></div>
+                                            <div className="space-y-2">
+                                                <div className="flex items-center justify-between"><h4 className="font-bold text-slate-700 flex items-center gap-2"><LucideIcon name="Monitor"/> 2. 貼上並還原</h4><span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">接收端</span></div>
+                                                <p className="text-xs text-slate-500">將收到的代碼貼在下方，即可還原行程。</p>
+                                                <textarea className="w-full h-20 bg-white border p-2 rounded text-xs mb-2" value={importText} onChange={e=>{setImportText(e.target.value);setErrorMsg("")}} placeholder="在此貼上代碼..."></textarea>
+                                                {errorMsg && <p className="text-red-500 text-xs mb-2">{errorMsg}</p>}
+                                                <button onClick={doPasteCode} className="w-full bg-slate-800 text-white font-bold py-3 rounded-xl shadow-lg flex justify-center gap-2"><LucideIcon name="Check"/> 確定還原</button>
+                                            </div>
+                                            <div className="border-t border-slate-200"></div>
+                                            <div className="text-center">
+                                                <div className="mb-2 text-sm font-bold text-slate-700">下載/讀取備份檔</div>
+                                                <div className="flex gap-2">
+                                                    <button onClick={downloadBackup} className="flex-1 bg-slate-100 py-2 rounded-lg text-xs font-bold">下載 .json</button>
+                                                    <button onClick={triggerFileUpload} className="flex-1 bg-slate-100 py-2 rounded-lg text-xs font-bold">讀取檔案</button>
+                                                    <input type="file" accept=".json" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : modalType === 'memo' ? (
+                                        <div>
+                                            <p className="text-sm text-slate-500 mb-2">在此輸入航班資訊、訂位代號等重要筆記：</p>
+                                            <textarea className="w-full h-64 bg-slate-50 border p-3 rounded-xl text-sm focus:outline-none resize-none" value={memoText} onChange={e=>setMemoText(e.target.value)} placeholder="例如：航班 BR132, 訂房代號 #12345..."></textarea>
+                                            <button onClick={saveMemo} className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl shadow-lg mt-2">儲存筆記</button>
+                                        </div>
+                                    ) : modalType === 'auth' ? (
+                                        <div className="space-y-4">
+                                            {user ? (
+                                                <div className="text-center">
+                                                    <p className="text-lg font-bold text-slate-800 mb-2">已登入</p>
+                                                    <p className="text-sm text-slate-500 mb-4">{user.email}</p>
+                                                    <button onClick={handleLogout} className="w-full bg-red-500 text-white font-bold py-3 rounded-xl shadow-lg">登出</button>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <p className="text-sm text-slate-500 text-center mb-4">{isLoginMode ? '登入後可跨裝置同步行程' : '註冊新帳號以保存行程'}</p>
+                                                    <div>
+                                                        <label className="text-xs font-bold text-slate-500">Email</label>
+                                                        <input type="email" value={authEmail} onChange={e=>setAuthEmail(e.target.value)} className="w-full border p-3 rounded-xl mb-2"/>
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-xs font-bold text-slate-500">密碼</label>
+                                                        <input type="password" value={authPass} onChange={e=>setAuthPass(e.target.value)} className="w-full border p-3 rounded-xl mb-4"/>
+                                                    </div>
+                                                    <button onClick={handleAuth} disabled={authLoading} className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl shadow-lg mb-2">
+                                                        {authLoading ? '處理中...' : (isLoginMode ? '登入' : '註冊')}
+                                                    </button>
+                                                    <div className="text-center text-xs text-slate-400">
+                                                        <span onClick={()=>setIsLoginMode(!isLoginMode)} className="underline cursor-pointer hover:text-teal-600">
+                                                            {isLoginMode ? '還沒有帳號？註冊' : '已有帳號？登入'}
+                                                        </span>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
                                     ) : modalType === 'settings' ? (
                                         <div><p className="text-sm mb-2">Gemini API Key:</p><input type="password" value={apiKey} onChange={e=>setApiKey(e.target.value)} className="w-full border p-3 rounded-xl mb-4"/><button onClick={()=>setIsModalOpen(false)} className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl">儲存</button></div>
                                     ) : modalType === 'ai_result' ? (
