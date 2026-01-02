@@ -421,6 +421,20 @@
                 setErrorMsg(""); setIsModalOpen(true);
             };
 
+            const deleteAccommodation = () => {
+                if(confirm("確定要移除" + (applyToRemaining ? "今天及後續天數的" : "今天的") + "住宿嗎？")) {
+                    setTrip(prev => {
+                        const newAcc = { ...prev.accommodations };
+                        delete newAcc[currentDay];
+                        if (applyToRemaining) {
+                            for (let i = currentDay + 1; i <= prev.days; i++) delete newAcc[i];
+                        }
+                        return { ...prev, accommodations: newAcc };
+                    });
+                    setIsModalOpen(false);
+                }
+            };
+
             const saveItem = () => {
                 if (!formData.title) { setErrorMsg("請輸入名稱"); return; }
                 const cost = Number(formData.cost) || 0;
@@ -751,10 +765,19 @@
                                                     <InputField label="備註 (選填)" name="note" value={formData.note} onChange={handleInputChange}/>
                                                 </>
                                             ) : (
-                                                <><InputField label="住宿名稱" name="title" value={formData.title} onChange={handleInputChange}/><InputField label="地址" name="location" value={formData.location} onChange={handleInputChange}/><CostInput label="住宿花費" value={formData.cost} onChange={handleInputChange} />{currentDay < trip.days && <div className="flex items-center gap-2 py-1"><input type="checkbox" checked={applyToRemaining} onChange={e=>setApplyToRemaining(e.target.checked)} className="w-4 h-4"/><label className="text-sm">套用到後續天數</label></div>}</>
+                                                <>
+                                                    <InputField label="住宿名稱" name="title" value={formData.title} onChange={handleInputChange}/>
+                                                    <InputField label="地址" name="location" value={formData.location} onChange={handleInputChange}/>
+                                                    <CostInput label="住宿花費" value={formData.cost} onChange={handleInputChange} />
+                                                    {currentDay < trip.days && <div className="flex items-center gap-2 py-1"><input type="checkbox" checked={applyToRemaining} onChange={e=>setApplyToRemaining(e.target.checked)} className="w-4 h-4"/><label className="text-sm">套用到後續天數</label></div>}
+                                                    <div className="flex gap-2 mt-4">
+                                                        <button onClick={deleteAccommodation} className="flex-1 bg-red-100 text-red-500 font-bold py-3 rounded-xl shadow-sm hover:bg-red-200">移除住宿</button>
+                                                        <button onClick={saveItem} className="flex-[2] bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-indigo-700">儲存</button>
+                                                    </div>
+                                                </>
                                             )}
                                             {errorMsg && <p className="text-red-500 text-xs mb-2 text-center">{errorMsg}</p>}
-                                            <button onClick={saveItem} className={`w-full text-white font-bold py-3 rounded-xl shadow-lg ${modalType==='expense'?'bg-orange-500':'bg-teal-600'}`}>儲存</button>
+                                            {modalType !== 'accommodation' && <button onClick={saveItem} className={`w-full text-white font-bold py-3 rounded-xl shadow-lg ${modalType==='expense'?'bg-orange-500':'bg-teal-600'}`}>儲存</button>}
                                         </>
                                     )}
                                 </div>
