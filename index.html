@@ -36,9 +36,12 @@
     <script type="text/babel">
         const { useState, useEffect, useRef, useMemo } = React;
 
+        // --- 設定與金鑰 ---
+        const PRESET_GEMINI_KEY = "AIzaSyAlb2z-m1L1tkehhf6JC7_iaorSWMlmyfY"; 
+
         // --- Supabase Configuration ---
         const SUPABASE_URL = 'https://dtzpkhrbyykceijxbhtd.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_rhrApXCDCaVI2bHoiUkpZA_3yCxtss2'; // 使用者提供的 Key
+        const SUPABASE_KEY = 'sb_publishable_rhrApXCDCaVI2bHoiUkpZA_3yCxtss2'; 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const Icon = ({ p, size = 20, className = "" }) => (
@@ -80,7 +83,8 @@
             Save: <><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></>,
             Smartphone: <><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></>,
             Monitor: <><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></>,
-            Cloud: <><path d="M17.5 19c0-1.7-1.3-3-3-3h-11c-1.7 0-3 1.3-3 3s1.3 3 3 3h11c1.7 0 3-1.3 3-3z"/><path d="M17.5 19c2.5 0 4.5-2 4.5-4.5S19.5 10 17 10c-.3 0-.6.1-.9.1"/><path d="M16.1 10.1C16.5 7.2 18.9 5 21.9 5c3.3 0 6 2.7 6 6s-2.7 6-6 6h-2.5"/><path d="M6 16c-2.2 0-4-1.8-4-4s1.8-4 4-4c.3 0 .6.1.9.1"/><path d="M6.9 8.1C7.3 5.2 9.7 3 12.7 3c3.3 0 6 2.7 6 6s-2.7 6-6 6H9.5"/></>
+            Cloud: <><path d="M17.5 19c0-1.7-1.3-3-3-3h-11c-1.7 0-3 1.3-3 3s1.3 3 3 3h11c1.7 0 3-1.3 3-3z"/><path d="M17.5 19c2.5 0 4.5-2 4.5-4.5S19.5 10 17 10c-.3 0-.6.1-.9.1"/><path d="M16.1 10.1C16.5 7.2 18.9 5 21.9 5c3.3 0 6 2.7 6 6s-2.7 6-6 6h-2.5"/><path d="M6 16c-2.2 0-4-1.8-4-4s1.8-4 4-4c.3 0 .6.1.9.1"/><path d="M6.9 8.1C7.3 5.2 9.7 3 12.7 3c3.3 0 6 2.7 6 6s-2.7 6-6 6H9.5"/></>,
+            Trash: <><path d="M3 6h18"/><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"/><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"/></>
         };
         const LucideIcon = ({ name, ...p }) => <Icon p={icons[name] || icons.MapPin} {...p} />;
 
@@ -116,38 +120,16 @@
             other: { icon: "MapPin", color: 'bg-gray-100 text-gray-600', label: '其他/購物', chartColor: '#64748b' } 
         };
         
+        // --- 預設行程資料 (空白) ---
         const INITIAL_DATA = { 
-            tripName: "大阪環球影城五日遊", 
-            startDate: "2025-02-05", 
-            days: 5, 
+            tripName: "我的旅程", 
+            startDate: new Date().toISOString().split('T')[0], 
+            days: 3, 
             currency: "TWD", 
             memo: "", 
-            dayTitles: {
-                "1": "出發與難波探索",
-                "2": "日本環球影城全日",
-                "3": "自由行程",
-                "4": "自由行程",
-                "5": "購物與歸賦"
-            },
-            accommodations: { 
-                1: { title: "大阪難波飯店", location: "相鐵 FRESA INN 大阪難波站前", cost: 0 }, 
-                2: { title: "大阪難波飯店", location: "相鐵 FRESA INN 大阪難波站前", cost: 0 }, 
-                3: { title: "大阪難波飯店", location: "相鐵 FRESA INN 大阪難波站前", cost: 0 }, 
-                4: { title: "大阪難波飯店", location: "相鐵 FRESA INN 大阪難波站前", cost: 0 } 
-            }, 
-            activities: [ 
-                { id: 101, day: 1, time: "05:00", title: "出門前往機場", location: "桃園國際機場", type: "transport", cost: 0, note: "準備出發" }, 
-                { id: 102, day: 1, time: "09:00", title: "搭乘飛機：桃園 -> 大阪", location: "關西國際機場", type: "transport", cost: 0, note: "09:00 台灣時間出發，12:30 日本時間抵達" }, 
-                { id: 103, day: 1, time: "13:30", title: "前往飯店", location: "相鐵 FRESA INN 大阪難波站前", type: "transport", cost: 0, note: "辦理 Check-in" }, 
-                { id: 104, day: 1, time: "16:00", title: "難波、心齋橋", location: "難波/心齋橋商圈", type: "sight", cost: 0, note: "逛街與晚餐" }, 
-                { id: 201, day: 2, time: "08:00", title: "日本環球影城 (USJ)", location: "日本環球影城", type: "sight", cost: 0, note: "整日行程" }, 
-                { id: 301, day: 3, time: "09:00", title: "自由行程", location: "大阪市區", type: "sight", cost: 0, note: "未定行程" }, 
-                { id: 401, day: 4, time: "09:00", title: "自由行程", location: "大阪市區", type: "sight", cost: 0, note: "未定行程" }, 
-                { id: 501, day: 5, time: "10:00", title: "電電街", location: "日本橋電電街", type: "sight", cost: 0, note: "動漫、電子產品巡禮" }, 
-                { id: 502, day: 5, time: "13:30", title: "臨空城 OUTLET", location: "Rinku Premium Outlets", type: "other", cost: 0, note: "最後採買" }, 
-                { id: 503, day: 5, time: "18:15", title: "到達機場", location: "關西國際機場", type: "transport", cost: 0, note: "辦理登機手續" }, 
-                { id: 504, day: 5, time: "20:45", title: "搭乘飛機：大阪 -> 桃園", location: "桃園國際機場", type: "transport", cost: 0, note: "20:45 日本時間出發，23:05 台灣時間抵達" } 
-            ],
+            dayTitles: {},
+            accommodations: {}, 
+            activities: [],
             expenses: [] 
         };
 
@@ -218,7 +200,8 @@
             const dragItem = useRef();
             const dragOverItem = useRef();
             const fileInputRef = useRef(null);
-            
+            const tripRef = useRef(); // Fix: useRef for cloud sync check to avoid stale closure
+
             // State
             const [trip, setTrip] = useState(() => {
                 const saved = localStorage.getItem('travelApp_data');
@@ -231,10 +214,10 @@
                     return p; } catch (e) { return INITIAL_DATA; } }
                 return INITIAL_DATA;
             });
-            const [apiKey, setApiKey] = useState(() => localStorage.getItem('gemini_api_key') || "");
+            const [apiKey, setApiKey] = useState(() => PRESET_GEMINI_KEY || localStorage.getItem('gemini_api_key') || "");
             const [user, setUser] = useState(null);
             const [authLoading, setAuthLoading] = useState(true);
-            const [syncStatus, setSyncStatus] = useState("idle"); // idle, syncing, done, error
+            const [syncStatus, setSyncStatus] = useState("idle"); 
             const [showSavedToast, setShowSavedToast] = useState(false);
             
             // View State
@@ -256,6 +239,9 @@
             const [authEmail, setAuthEmail] = useState("");
             const [authPass, setAuthPass] = useState("");
             const [isLoginMode, setIsLoginMode] = useState(true);
+
+            // Update ref whenever trip changes
+            useEffect(() => { tripRef.current = trip; }, [trip]);
 
             // --- Effects ---
             useEffect(() => {
@@ -301,13 +287,21 @@
                     .single();
                 
                 if (data && data.trip_data) {
-                    // Conflict resolution: Simple prompt or just load?
-                    // For now, let's load if local is default, otherwise ask (mock ask by just loading for now to be seamless)
-                    // Better UX: If cloud data exists, ask user if they want to overwrite local
-                    if (JSON.stringify(trip) !== JSON.stringify(INITIAL_DATA) && confirm("發現雲端有備份行程，是否要下載覆蓋目前的進度？")) {
-                        setTrip(data.trip_data);
-                    } else if (JSON.stringify(trip) === JSON.stringify(INITIAL_DATA)) {
-                        setTrip(data.trip_data);
+                    const currentTrip = tripRef.current; // Use Ref to get latest state
+                    // Check if cloud data is different from current local data
+                    const isLocalDefault = JSON.stringify(currentTrip) === JSON.stringify(INITIAL_DATA);
+                    const isDifferent = JSON.stringify(currentTrip) !== JSON.stringify(data.trip_data);
+
+                    if (isDifferent) {
+                        if (isLocalDefault) {
+                            // If local is default (blank), just load cloud data automatically
+                            setTrip(data.trip_data);
+                        } else {
+                            // If local has changes, ask user
+                            if (confirm("發現雲端有不同的行程備份，是否要下載覆蓋目前的進度？\n(按「取消」則保留目前裝置上的修改)")) {
+                                setTrip(data.trip_data);
+                            }
+                        }
                     }
                 }
                 setSyncStatus("done");
@@ -488,6 +482,13 @@
             const handleBackup = () => { setModalType('backup'); setIsModalOpen(true); };
             const handleExport = () => { setExportText(JSON.stringify(trip)); setModalType('export'); setIsModalOpen(true); }; 
             
+            const resetToDefault = () => {
+                if(confirm("確定要重置為預設行程嗎？這將會清除您目前的所有修改。")) {
+                    setTrip(INITIAL_DATA);
+                    setIsModalOpen(false);
+                }
+            };
+
             const downloadBackup = () => {
                 const dataStr = JSON.stringify(trip, null, 2);
                 const blob = new Blob([dataStr], { type: "application/json" });
@@ -652,8 +653,8 @@
                                                     <div className="flex items-center gap-3">
                                                         <span className="font-mono font-bold text-slate-600">${exp.cost.toLocaleString()}</span>
                                                         <div className="flex gap-1">
-                                                            <button onClick={()=>openExpenseModal(exp)} className="text-slate-300 hover:text-slate-500"><LucideIcon name="Edit2" size={14}/></button>
-                                                            <button onClick={()=>delExp(exp.id)} className="text-slate-300 hover:text-red-500"><LucideIcon name="Trash2" size={14}/></button>
+                                                            <button onClick={()=>openExpenseModal(exp)} className="p-2 text-slate-400 hover:text-teal-600 rounded-full hover:bg-slate-50"><LucideIcon name="Edit2" size={16}/></button>
+                                                            <button onClick={()=>delExp(exp.id)} className="p-2 text-slate-400 hover:text-red-500 rounded-full hover:bg-red-50"><LucideIcon name="Trash2" size={16}/></button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -741,7 +742,16 @@
                                             )}
                                         </div>
                                     ) : modalType === 'settings' ? (
-                                        <div><p className="text-sm mb-2">Gemini API Key:</p><input type="password" value={apiKey} onChange={e=>setApiKey(e.target.value)} className="w-full border p-3 rounded-xl mb-4"/><button onClick={()=>setIsModalOpen(false)} className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl">儲存</button></div>
+                                        <div>
+                                            <p className="text-sm mb-2">Gemini API Key:</p>
+                                            <input type="password" value={apiKey} onChange={e=>setApiKey(e.target.value)} className="w-full border p-3 rounded-xl mb-4"/>
+                                            <button onClick={()=>setIsModalOpen(false)} className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl mb-4">儲存</button>
+                                            <div className="border-t pt-4">
+                                                <p className="text-xs text-red-500 mb-2 font-bold">危險區域</p>
+                                                <button onClick={resetToDefault} className="w-full bg-red-100 text-red-600 font-bold py-3 rounded-xl border border-red-200">重置為預設行程</button>
+                                                <p className="text-[10px] text-slate-400 mt-1">這將清除瀏覽器中的所有修改，還原至程式碼初始設定。</p>
+                                            </div>
+                                        </div>
                                     ) : modalType === 'ai_result' ? (
                                         <div className="prose prose-sm text-slate-700">{isAiLoading?<div className="text-center py-8 animate-pulse text-teal-600">AI 思考中...</div>:<div dangerouslySetInnerHTML={{ __html: marked.parse(aiResult) }} />}</div>
                                     ) : modalType === 'stats' ? (
