@@ -16,8 +16,14 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
-        /* 修改這裡：讓頂部 padding 自動計算安全區域 + 額外空間 */
-        .safe-top { padding-top: calc(env(safe-area-inset-top) + 16px); }
+        
+        /* 修改這裡：加大安全區域，專為動態島優化 */
+        /* 使用 max() 確保即使在舊手機上也有基本的頂部間距，但在 Pro 手機上會自動避開動態島 */
+        .safe-top { 
+            padding-top: max(env(safe-area-inset-top), 20px); 
+            height: auto;
+        }
+        
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
@@ -121,17 +127,40 @@
             other: { icon: "MapPin", color: 'bg-gray-100 text-gray-600', label: '其他/購物', chartColor: '#64748b' } 
         };
         
-        // --- 預設行程資料 (空白) ---
-        const INITIAL_DATA = { 
-            tripName: "我的旅程", 
-            startDate: new Date().toISOString().split('T')[0], 
-            days: 3, 
-            currency: "TWD", 
-            memo: "", 
-            dayTitles: {},
-            accommodations: {}, 
-            activities: [],
-            expenses: [] 
+        // --- 預設行程資料 (更新為使用者提供的行程) ---
+        const INITIAL_DATA = {
+          "tripName": "大阪環球影城五日遊",
+          "startDate": "2025-02-05",
+          "days": 5,
+          "currency": "TWD",
+          "memo": "",
+          "dayTitles": {
+            "1": "出發與難波探索",
+            "2": "日本環球影城全日",
+            "3": "自由行程",
+            "4": "自由行程",
+            "5": "購物與歸賦"
+          },
+          "accommodations": {
+            "1": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 },
+            "2": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 },
+            "3": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 },
+            "4": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 }
+          },
+          "activities": [
+            { "id": 101, "day": 1, "time": "05:00", "title": "出門前往機場", "location": "桃園國際機場", "type": "transport", "cost": 0, "note": "準備出發" },
+            { "id": 102, "day": 1, "time": "09:00", "title": "搭乘飛機：桃園 -> 大阪", "location": "關西國際機場", "type": "transport", "cost": 0, "note": "09:00 台灣時間出發，12:30 日本時間抵達" },
+            { "id": 103, "day": 1, "time": "13:30", "title": "前往飯店", "location": "相鐵 FRESA INN 大阪難波站前", "type": "transport", "cost": 0, "note": "辦理 Check-in" },
+            { "id": 104, "day": 1, "time": "16:00", "title": "難波、心齋橋", "location": "難波/心齋橋商圈", "type": "sight", "cost": 0, "note": "逛街與晚餐" },
+            { "id": 201, "day": 2, "time": "08:00", "title": "日本環球影城 (USJ)", "location": "日本環球影城", "type": "sight", "cost": 0, "note": "整日行程" },
+            { "id": 301, "day": 3, "time": "09:00", "title": "自由行程", "location": "大阪市區", "type": "sight", "cost": 0, "note": "未定行程" },
+            { "id": 401, "day": 4, "time": "09:00", "title": "自由行程", "location": "大阪市區", "type": "sight", "cost": 0, "note": "未定行程" },
+            { "id": 501, "day": 5, "time": "10:00", "title": "電電街", "location": "日本橋電電街", "type": "sight", "cost": 0, "note": "動漫、電子產品巡禮" },
+            { "id": 502, "day": 5, "time": "13:30", "title": "臨空城 OUTLET", "location": "Rinku Premium Outlets", "type": "other", "cost": 0, "note": "最後採買" },
+            { "id": 503, "day": 5, "time": "18:15", "title": "到達機場", "location": "關西國際機場", "type": "transport", "cost": 0, "note": "辦理登機手續" },
+            { "id": 504, "day": 5, "time": "20:45", "title": "搭乘飛機：大阪 -> 桃園", "location": "桃園國際機場", "type": "transport", "cost": 0, "note": "20:45 日本時間出發，23:05 台灣時間抵達" }
+          ],
+          "expenses": []
         };
 
         const callGemini = async (prompt, key, onResult, onError) => {
@@ -161,35 +190,38 @@
             return { icon: "Link", label: "連結", color: "text-slate-600 border-slate-200 bg-slate-50 hover:bg-slate-100" };
         };
 
+        // --- Pie Chart Component (CSS Conic Gradient) ---
         const PieChart = ({ data }) => {
             const total = data.reduce((sum, item) => sum + item.value, 0);
             if (total === 0) return <div className="text-center text-slate-400 py-10">尚無花費資料</div>;
-            let cumulativePercent = 0;
+
+            let currentAngle = 0;
+            const gradientString = data.map(item => {
+                const percent = (item.value / total) * 100;
+                const start = currentAngle;
+                currentAngle += percent;
+                return `${item.color} ${start}% ${currentAngle}%`;
+            }).join(', ');
+
             return (
                 <div className="flex flex-col items-center">
-                    <div className="relative w-48 h-48">
-                        <svg viewBox="0 0 100 100" className="transform -rotate-90 w-full h-full">
-                            {data.map((item, i) => {
-                                const percent = item.value / total;
-                                const dashVal = percent * 100;
-                                cumulativePercent += dashVal;
-                                return (
-                                    <circle key={i} r="15.9155" cx="50" cy="50" fill="transparent" stroke={item.color} strokeWidth="6" strokeDasharray={`${dashVal} ${100 - dashVal}`} strokeDashoffset={25 + 100 - (cumulativePercent - dashVal)} className="transition-all duration-500" />
-                                );
-                            })}
-                            <foreignObject x="0" y="0" width="100" height="100">
-                                <div className="h-full flex flex-col items-center justify-center text-[8px] text-slate-500">
-                                    <span>總支出</span>
-                                    <span className="font-bold text-slate-800 text-[12px]">${total.toLocaleString()}</span>
-                                </div>
-                            </foreignObject>
-                        </svg>
+                    <div className="relative w-48 h-48 rounded-full shadow-inner" style={{ background: `conic-gradient(${gradientString})` }}>
+                        <div className="absolute inset-0 m-auto w-32 h-32 bg-white rounded-full flex flex-col items-center justify-center shadow-sm">
+                             <span className="text-xs text-slate-500">總支出</span>
+                             <span className="font-bold text-slate-800 text-lg">${total.toLocaleString()}</span>
+                        </div>
                     </div>
                     <div className="w-full mt-6 space-y-2">
                         {data.sort((a,b) => b.value - a.value).map((item, i) => (
                             <div key={i} className="flex justify-between items-center text-sm">
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full" style={{backgroundColor: item.color}}></div><span className="text-slate-600">{item.label}</span></div>
-                                <div className="flex gap-4"><span className="font-bold text-slate-800">${item.value.toLocaleString()}</span><span className="text-slate-400 w-10 text-right">{Math.round((item.value/total)*100)}%</span></div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full shadow-sm" style={{backgroundColor: item.color}}></div>
+                                    <span className="text-slate-600">{item.label}</span>
+                                </div>
+                                <div className="flex gap-4">
+                                    <span className="font-bold text-slate-800">${item.value.toLocaleString()}</span>
+                                    <span className="text-slate-400 w-10 text-right">{Math.round((item.value/total)*100)}%</span>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -549,7 +581,8 @@
                 <div className="min-h-screen supports-[min-h-[100dvh]]:min-h-[100dvh] w-full bg-slate-50 text-slate-800 pb-24 md:pb-0 overscroll-y-none touch-pan-y relative">
                     {showSavedToast && <div className="fixed bottom-20 left-4 bg-teal-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-50 animate-toast flex items-center gap-1"><LucideIcon name="Check" size={12}/> 已儲存 {syncStatus==='syncing' && '(同步中...)'}</div>}
                     
-                    <header className="bg-teal-600 text-white p-4 shadow-lg sticky top-0 z-30 safe-top flex justify-between items-center">
+                    {/* Fixed Header */}
+                    <header className="bg-teal-600 text-white p-4 shadow-lg fixed top-0 left-0 right-0 z-40 safe-top flex justify-between items-center">
                         <div>
                             <div className="flex items-center gap-2 mb-1"><LucideIcon name="Plane" className="text-teal-200"/><input value={trip.tripName} onChange={e => setTrip(p => ({...p, tripName: e.target.value}))} className="bg-transparent font-bold text-xl outline-none border-b border-teal-300 w-full md:w-auto"/></div>
                             <div className="text-teal-100 text-sm flex items-center gap-2"><input type="date" value={trip.startDate} onChange={e => setTrip(p => ({...p, startDate: e.target.value}))} className="bg-transparent outline-none"/><span>• {trip.days} 天</span></div>
@@ -565,7 +598,10 @@
                         </div>
                     </header>
 
-                    <main className="max-w-4xl mx-auto p-4 md:flex gap-6 mt-4">
+                    {/* Add padding-top to compensate for fixed header. safe-top already accounts for inset, but we need extra height for header content itself (approx 4rem/64px + 2rem padding ~ 96px) plus safe-area. */}
+                    {/* Actually safe-top on body/header handles the top spacing. The main needs top padding equal to header height. */}
+                    {/* Header height is roughly safe-area + ~80px content. Let's use a safe large padding. */}
+                    <main className="max-w-4xl mx-auto p-4 md:flex gap-6 mt-4 pt-32">
                         {isSummaryView ? (
                             <div className="w-full space-y-6">
                                 <h2 className="text-xl font-bold px-2">行程總覽 (拖曳排序)</h2>
@@ -671,9 +707,10 @@
 
                     {isModalOpen && (
                         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-modal">
-                            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+                            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden max-h-[90vh] flex flex-col z-50">
                                 <div className="bg-slate-50 p-4 border-b flex justify-between shrink-0"><h3 className="font-bold text-lg">{modalType==='delete'?'確認刪除':modalType==='deleteExp'?'刪除花費':modalType==='deleteDay'?'刪除天數':modalType==='backup'?'📲 跨裝置轉移':modalType==='sort'?'排序':modalType==='settings'?'設定':modalType==='ai_result'?'AI 建議':modalType==='stats'?'花費統計':modalType==='expense'?'記帳':modalType==='memo'?'重要筆記':modalType==='auth'?'雲端登入':editingId?'編輯':'新增'}</h3><button onClick={()=>setIsModalOpen(false)} className="text-slate-400">✕</button></div>
                                 <div className="p-6 space-y-4 overflow-y-auto">
+                                    {/* ... Modal Contents ... */}
                                     {(modalType==='delete'||modalType==='deleteDay'||modalType==='deleteExp'||modalType==='sort') ? (
                                         <div className="text-center">
                                             <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4"><LucideIcon name="AlertTriangle" size={32}/></div>
