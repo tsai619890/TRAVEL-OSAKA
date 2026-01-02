@@ -16,7 +16,8 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
-        .safe-top { padding-top: env(safe-area-inset-top); }
+        /* 修改這裡：讓頂部 padding 自動計算安全區域 + 額外空間 */
+        .safe-top { padding-top: calc(env(safe-area-inset-top) + 16px); }
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
