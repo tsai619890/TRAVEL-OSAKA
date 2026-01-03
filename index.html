@@ -17,7 +17,7 @@
     <style>
         body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
         
-        /* 修改這裡：頂部安全區域改為 + 10px，避免下降太多 */
+        /* 頂部安全區域 + 10px */
         .safe-top { 
             padding-top: calc(env(safe-area-inset-top) + 10px) !important; 
             height: auto;
@@ -84,13 +84,18 @@
             Table: <><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></>,
             Link: <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>,
             PieChart: <><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></>,
-            Receipt: <><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17V7"/></>,
+            Receipt: <><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17V7"/></>,
             StickyNote: <><path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"/><path d="M15 3v6h6"/></>,
             Save: <><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></>,
             Smartphone: <><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></>,
             Monitor: <><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></>,
             Cloud: <><path d="M17.5 19c0-1.7-1.3-3-3-3h-11c-1.7 0-3 1.3-3 3s1.3 3 3 3h11c1.7 0 3-1.3 3-3z"/><path d="M17.5 19c2.5 0 4.5-2 4.5-4.5S19.5 10 17 10c-.3 0-.6.1-.9.1"/><path d="M16.1 10.1C16.5 7.2 18.9 5 21.9 5c3.3 0 6 2.7 6 6s-2.7 6-6 6h-2.5"/><path d="M6 16c-2.2 0-4-1.8-4-4s1.8-4 4-4c.3 0 .6.1.9.1"/><path d="M6.9 8.1C7.3 5.2 9.7 3 12.7 3c3.3 0 6 2.7 6 6s-2.7 6-6 6H9.5"/></>,
-            Trash: <><path d="M3 6h18"/><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"/><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"/></>
+            Trash: <><path d="M3 6h18"/><path d="M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6"/><path d="M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"/></>,
+            Ticket: <><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></>,
+            ArrowUp: <><line x1="12" x2="12" y1="19" y2="5"/><polyline points="5 12 12 5 19 12"/></>,
+            ArrowDown: <><line x1="12" x2="12" y1="5" y2="19"/><polyline points="19 12 12 19 5 12"/></>,
+            Luggage: <><path d="M6 20h0a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h0"/><path d="M8 18V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v14"/></>,
+            ShoppingBag: <><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></>
         };
         const LucideIcon = ({ name, ...p }) => <Icon p={icons[name] || icons.MapPin} {...p} />;
 
@@ -126,20 +131,13 @@
             other: { icon: "MapPin", color: 'bg-gray-100 text-gray-600', label: '其他/購物', chartColor: '#64748b' } 
         };
         
-        // --- 預設行程資料 (更新為使用者提供的行程) ---
         const INITIAL_DATA = {
           "tripName": "大阪環球影城五日遊",
           "startDate": "2025-02-05",
           "days": 5,
           "currency": "TWD",
           "memo": "",
-          "dayTitles": {
-            "1": "出發與難波探索",
-            "2": "日本環球影城全日",
-            "3": "自由行程",
-            "4": "自由行程",
-            "5": "購物與歸賦"
-          },
+          "dayTitles": { "1": "出發與難波探索", "2": "日本環球影城全日", "3": "自由行程", "4": "自由行程", "5": "購物與歸賦" },
           "accommodations": {
             "1": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 },
             "2": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 },
@@ -147,19 +145,21 @@
             "4": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 }
           },
           "activities": [
-            { "id": 101, "day": 1, "time": "05:00", "title": "出門前往機場", "location": "桃園國際機場", "type": "transport", "cost": 0, "note": "準備出發" },
-            { "id": 102, "day": 1, "time": "09:00", "title": "搭乘飛機：桃園 -> 大阪", "location": "關西國際機場", "type": "transport", "cost": 0, "note": "09:00 台灣時間出發，12:30 日本時間抵達" },
-            { "id": 103, "day": 1, "time": "13:30", "title": "前往飯店", "location": "相鐵 FRESA INN 大阪難波站前", "type": "transport", "cost": 0, "note": "辦理 Check-in" },
-            { "id": 104, "day": 1, "time": "16:00", "title": "難波、心齋橋", "location": "難波/心齋橋商圈", "type": "sight", "cost": 0, "note": "逛街與晚餐" },
-            { "id": 201, "day": 2, "time": "08:00", "title": "日本環球影城 (USJ)", "location": "日本環球影城", "type": "sight", "cost": 0, "note": "整日行程" },
-            { "id": 301, "day": 3, "time": "09:00", "title": "自由行程", "location": "大阪市區", "type": "sight", "cost": 0, "note": "未定行程" },
-            { "id": 401, "day": 4, "time": "09:00", "title": "自由行程", "location": "大阪市區", "type": "sight", "cost": 0, "note": "未定行程" },
-            { "id": 501, "day": 5, "time": "10:00", "title": "電電街", "location": "日本橋電電街", "type": "sight", "cost": 0, "note": "動漫、電子產品巡禮" },
-            { "id": 502, "day": 5, "time": "13:30", "title": "臨空城 OUTLET", "location": "Rinku Premium Outlets", "type": "other", "cost": 0, "note": "最後採買" },
-            { "id": 503, "day": 5, "time": "18:15", "title": "到達機場", "location": "關西國際機場", "type": "transport", "cost": 0, "note": "辦理登機手續" },
-            { "id": 504, "day": 5, "time": "20:45", "title": "搭乘飛機：大阪 -> 桃園", "location": "桃園國際機場", "type": "transport", "cost": 0, "note": "20:45 日本時間出發，23:05 台灣時間抵達" }
+            { "id": 101, "day": 1, "time": "05:00", "title": "出門前往機場", "location": "桃園國際機場", "type": "transport", "cost": 0, "note": "準備出發", "shoppingList": [] },
+            { "id": 102, "day": 1, "time": "09:00", "title": "搭乘飛機：桃園 -> 大阪", "location": "關西國際機場", "type": "transport", "cost": 0, "note": "09:00 台灣時間出發，12:30 日本時間抵達", "shoppingList": [] },
+            { "id": 103, "day": 1, "time": "13:30", "title": "前往飯店", "location": "相鐵 FRESA INN 大阪難波站前", "type": "transport", "cost": 0, "note": "辦理 Check-in", "shoppingList": [] },
+            { "id": 104, "day": 1, "time": "16:00", "title": "難波、心齋橋", "location": "難波/心齋橋商圈", "type": "sight", "cost": 0, "note": "逛街與晚餐", "shoppingList": [] },
+            { "id": 201, "day": 2, "time": "08:00", "title": "日本環球影城 (USJ)", "location": "日本環球影城", "type": "sight", "cost": 0, "note": "整日行程", "shoppingList": [] },
+            { "id": 301, "day": 3, "time": "09:00", "title": "自由行程", "location": "大阪市區", "type": "sight", "cost": 0, "note": "未定行程", "shoppingList": [] },
+            { "id": 401, "day": 4, "time": "09:00", "title": "自由行程", "location": "大阪市區", "type": "sight", "cost": 0, "note": "未定行程", "shoppingList": [] },
+            { "id": 501, "day": 5, "time": "10:00", "title": "電電街", "location": "日本橋電電街", "type": "sight", "cost": 0, "note": "動漫、電子產品巡禮", "shoppingList": [] },
+            { "id": 502, "day": 5, "time": "13:30", "title": "臨空城 OUTLET", "location": "Rinku Premium Outlets", "type": "other", "cost": 0, "note": "最後採買", "shoppingList": [] },
+            { "id": 503, "day": 5, "time": "18:15", "title": "到達機場", "location": "關西國際機場", "type": "transport", "cost": 0, "note": "辦理登機手續", "shoppingList": [] },
+            { "id": 504, "day": 5, "time": "20:45", "title": "搭乘飛機：大阪 -> 桃園", "location": "桃園國際機場", "type": "transport", "cost": 0, "note": "20:45 日本時間出發，23:05 台灣時間抵達", "shoppingList": [] }
           ],
-          "expenses": []
+          "expenses": [],
+          "passengers": [],
+          "globalShoppingList": []
         };
 
         const callGemini = async (prompt, key, onResult, onError) => {
@@ -232,7 +232,7 @@
             const dragItem = useRef();
             const dragOverItem = useRef();
             const fileInputRef = useRef(null);
-            const tripRef = useRef(); // Fix: useRef for cloud sync check to avoid stale closure
+            const tripRef = useRef();
 
             // State
             const [trip, setTrip] = useState(() => {
@@ -243,6 +243,10 @@
                     if(!p.expenses) p.expenses=[];
                     if(!p.dayTitles) p.dayTitles={};
                     if(!p.memo) p.memo = "";
+                    if(!p.passengers) p.passengers = [];
+                    if(!p.globalShoppingList) p.globalShoppingList = [];
+                    // Ensure activities have shoppingList
+                    p.activities = p.activities.map(a => ({ ...a, shoppingList: a.shoppingList || [] }));
                     return p; } catch (e) { return INITIAL_DATA; } }
                 return INITIAL_DATA;
             });
@@ -259,25 +263,24 @@
             const [modalType, setModalType] = useState('activity'); 
             const [editingId, setEditingId] = useState(null);
             const [applyToRemaining, setApplyToRemaining] = useState(false);
-            const [formData, setFormData] = useState({ time: "09:00", title: "", location: "", links: [], type: "sight", cost: "", note: "" });
+            const [formData, setFormData] = useState({ time: "09:00", title: "", location: "", links: [], shoppingList: [], type: "sight", cost: "", note: "" });
             const [errorMsg, setErrorMsg] = useState(""); 
             const [exportText, setExportText] = useState(""); 
             const [importText, setImportText] = useState(""); 
             const [aiResult, setAiResult] = useState("");
             const [isAiLoading, setIsAiLoading] = useState(false);
             const [memoText, setMemoText] = useState("");
-            
+            const [flightFormData, setFlightFormData] = useState([]);
+            const [globalShoppingList, setGlobalShoppingList] = useState([]);
+
             // Auth Form
             const [authEmail, setAuthEmail] = useState("");
             const [authPass, setAuthPass] = useState("");
             const [isLoginMode, setIsLoginMode] = useState(true);
 
-            // Update ref whenever trip changes
             useEffect(() => { tripRef.current = trip; }, [trip]);
 
-            // --- Effects ---
             useEffect(() => {
-                // Check Auth Status
                 const checkUser = async () => {
                     const { data: { session } } = await supabase.auth.getSession();
                     setUser(session?.user || null);
@@ -285,7 +288,6 @@
                     if (session?.user) loadFromCloud(session.user.id);
                 };
                 checkUser();
-                
                 const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
                     setUser(session?.user || null);
                     if (session?.user) loadFromCloud(session.user.id);
@@ -294,14 +296,8 @@
             }, []);
 
             useEffect(() => { 
-                // Local Save
                 localStorage.setItem('travelApp_data', JSON.stringify(trip)); 
-                
-                // Cloud Sync (Auto Save)
-                if (user) {
-                    saveToCloud(trip);
-                }
-
+                if (user) saveToCloud(trip);
                 setShowSavedToast(true);
                 const timer = setTimeout(() => setShowSavedToast(false), 2000);
                 return () => clearTimeout(timer);
@@ -309,75 +305,42 @@
             
             useEffect(() => { localStorage.setItem('gemini_api_key', apiKey); }, [apiKey]);
 
-            // --- Cloud Functions ---
             const loadFromCloud = async (userId) => {
                 setSyncStatus("syncing");
-                const { data, error } = await supabase
-                    .from('trips')
-                    .select('trip_data')
-                    .eq('user_id', userId)
-                    .single();
-                
+                const { data } = await supabase.from('trips').select('trip_data').eq('user_id', userId).single();
                 if (data && data.trip_data) {
-                    const currentTrip = tripRef.current; // Use Ref to get latest state
-                    // Check if cloud data is different from current local data
+                    const currentTrip = tripRef.current;
                     const isLocalDefault = JSON.stringify(currentTrip) === JSON.stringify(INITIAL_DATA);
                     const isDifferent = JSON.stringify(currentTrip) !== JSON.stringify(data.trip_data);
-
                     if (isDifferent) {
-                        if (isLocalDefault) {
-                            // If local is default (blank), just load cloud data automatically
-                            setTrip(data.trip_data);
-                        } else {
-                            // If local has changes, ask user
-                            if (confirm("發現雲端有不同的行程備份，是否要下載覆蓋目前的進度？\n(按「取消」則保留目前裝置上的修改)")) {
-                                setTrip(data.trip_data);
-                            }
-                        }
+                        if (isLocalDefault) setTrip(data.trip_data);
+                        else if (confirm("發現雲端有不同的行程備份，是否要下載覆蓋目前的進度？\n(按「取消」則保留目前裝置上的修改)")) setTrip(data.trip_data);
                     }
                 }
-                setSyncStatus("done");
-                setTimeout(() => setSyncStatus("idle"), 2000);
+                setSyncStatus("done"); setTimeout(() => setSyncStatus("idle"), 2000);
             };
 
             const saveToCloud = async (currentTrip) => {
                 if (!user) return;
                 setSyncStatus("syncing");
-                const { error } = await supabase
-                    .from('trips')
-                    .upsert({ user_id: user.id, trip_data: currentTrip, updated_at: new Date() });
-                
-                if (error) {
-                    console.error("Cloud save failed:", error);
-                    setSyncStatus("error");
-                } else {
-                    setSyncStatus("done");
-                    setTimeout(() => setSyncStatus("idle"), 2000);
-                }
+                const { error } = await supabase.from('trips').upsert({ user_id: user.id, trip_data: currentTrip, updated_at: new Date() });
+                if (error) setSyncStatus("error"); else { setSyncStatus("done"); setTimeout(() => setSyncStatus("idle"), 2000); }
             };
 
             const handleAuth = async () => {
                 setAuthLoading(true);
                 if (isLoginMode) {
                     const { error } = await supabase.auth.signInWithPassword({ email: authEmail, password: authPass });
-                    if (error) alert(error.message);
-                    else { setIsModalOpen(false); alert("登入成功！行程將自動同步。"); }
+                    if (error) alert(error.message); else { setIsModalOpen(false); alert("登入成功！行程將自動同步。"); }
                 } else {
                     const { error } = await supabase.auth.signUp({ email: authEmail, password: authPass });
-                    if (error) alert(error.message);
-                    else { alert("註冊成功！請檢查 Email 驗證信。"); setIsLoginMode(true); }
+                    if (error) alert(error.message); else { alert("註冊成功！請檢查 Email 驗證信。"); setIsLoginMode(true); }
                 }
                 setAuthLoading(false);
             };
 
-            const handleLogout = async () => {
-                await supabase.auth.signOut();
-                setUser(null);
-                alert("已登出");
-                setIsModalOpen(false);
-            };
+            const handleLogout = async () => { await supabase.auth.signOut(); setUser(null); alert("已登出"); setIsModalOpen(false); };
 
-            // --- Interaction Handlers ---
             const handleInputChange = (e) => { setFormData({ ...formData, [e.target.name]: e.target.value }); setErrorMsg(""); };
             const handleDragStart = (e, pos) => { dragItem.current = pos; e.target.classList.add('dragging'); };
             const handleDragEnter = (e, pos) => { dragOverItem.current = pos; };
@@ -401,11 +364,9 @@
                 if (dragItem.current === undefined || dragOverItem.current === undefined || d1 === d2) return;
                 setTrip(prev => {
                     const newActs = prev.activities.map(a => a.day === d1 ? { ...a, day: d2 } : a.day === d2 ? { ...a, day: d1 } : a);
-                    const newAcc = { ...prev.accommodations };
-                    const temp = newAcc[d1]; newAcc[d1] = newAcc[d2]; newAcc[d2] = temp;
+                    const newAcc = { ...prev.accommodations }; const temp = newAcc[d1]; newAcc[d1] = newAcc[d2]; newAcc[d2] = temp;
                     const newExp = (prev.expenses || []).map(e => e.day === d1 ? { ...e, day: d2 } : e.day === d2 ? { ...e, day: d1 } : e);
-                    const newTitles = { ...prev.dayTitles };
-                    const t = newTitles[d1]; newTitles[d1] = newTitles[d2]; newTitles[d2] = t;
+                    const newTitles = { ...prev.dayTitles }; const t = newTitles[d1]; newTitles[d1] = newTitles[d2]; newTitles[d2] = t;
                     return { ...prev, activities: newActs, accommodations: newAcc, expenses: newExp, dayTitles: newTitles };
                 });
             };
@@ -431,7 +392,8 @@
             const openModal = (act = null) => {
                 setModalType('activity'); setEditingId(act ? act.id : null);
                 const initLinks = act?.links ? [...act.links] : (act?.driveLink ? [{url: act.driveLink, title: ''}] : []);
-                setFormData(act ? { ...act, cost: act.cost, links: initLinks } : { time: "09:00", title: "", location: "", links: [], type: "sight", cost: "", note: "" });
+                const initShopping = act?.shoppingList ? [...act.shoppingList] : [];
+                setFormData(act ? { ...act, cost: act.cost, links: initLinks, shoppingList: initShopping } : { time: "09:00", title: "", location: "", links: [], shoppingList: [], type: "sight", cost: "", note: "" });
                 setErrorMsg(""); setIsModalOpen(true);
             };
 
@@ -450,11 +412,8 @@
             const deleteAccommodation = () => {
                 if(confirm("確定要移除" + (applyToRemaining ? "今天及後續天數的" : "今天的") + "住宿嗎？")) {
                     setTrip(prev => {
-                        const newAcc = { ...prev.accommodations };
-                        delete newAcc[currentDay];
-                        if (applyToRemaining) {
-                            for (let i = currentDay + 1; i <= prev.days; i++) delete newAcc[i];
-                        }
+                        const newAcc = { ...prev.accommodations }; delete newAcc[currentDay];
+                        if (applyToRemaining) for (let i = currentDay + 1; i <= prev.days; i++) delete newAcc[i];
                         return { ...prev, accommodations: newAcc };
                     });
                     setIsModalOpen(false);
@@ -466,7 +425,9 @@
                 const cost = Number(formData.cost) || 0;
                 if (modalType === 'activity') {
                     const validLinks = formData.links.filter(l => l.url.trim() !== "");
-                    const newAct = { id: editingId || Date.now(), day: currentDay, ...formData, links: validLinks, cost };
+                    // Filter empty shopping items if name is empty
+                    const validShopping = formData.shoppingList.filter(s => s.item.trim() !== "");
+                    const newAct = { id: editingId || Date.now(), day: currentDay, ...formData, links: validLinks, shoppingList: validShopping, cost };
                     delete newAct.driveLink; 
                     setTrip(prev => ({ ...prev, activities: editingId ? prev.activities.map(a => a.id === editingId ? newAct : a) : [...prev.activities, newAct] }));
                 } else if (modalType === 'accommodation') {
@@ -483,17 +444,49 @@
                 setIsModalOpen(false);
             };
 
-            // Links handlers
             const addLink = () => setFormData(p => ({ ...p, links: [...p.links, { url: "", title: "" }] }));
             const removeLink = (idx) => setFormData(p => ({ ...p, links: p.links.filter((_, i) => i !== idx) }));
             const updateLink = (idx, field, val) => setFormData(p => ({ ...p, links: p.links.map((l, i) => i === idx ? { ...l, [field]: val } : l) }));
+
+            // --- Shopping List Handlers ---
+            const addShoppingItem = () => setFormData(p => ({ ...p, shoppingList: [...p.shoppingList, { item: "", forWhom: "", isBought: false }] }));
+            const removeShoppingItem = (idx) => setFormData(p => ({ ...p, shoppingList: p.shoppingList.filter((_, i) => i !== idx) }));
+            const updateShoppingItem = (idx, field, val) => setFormData(p => ({ ...p, shoppingList: p.shoppingList.map((s, i) => i === idx ? { ...s, [field]: val } : s) }));
+            
+            // Toggle shopping item in timeline view
+            const toggleActivityShoppingItem = (actId, itemIdx) => {
+                setTrip(prev => ({
+                    ...prev,
+                    activities: prev.activities.map(a => {
+                        if (a.id !== actId) return a;
+                        const newList = [...a.shoppingList];
+                        newList[itemIdx] = { ...newList[itemIdx], isBought: !newList[itemIdx].isBought };
+                        return { ...a, shoppingList: newList };
+                    })
+                }));
+            };
+
+            // Global Shopping Handlers
+            const openGlobalShoppingModal = () => {
+                setGlobalShoppingList(trip.globalShoppingList || []);
+                setModalType('shopping');
+                setIsModalOpen(true);
+            };
+            const addGlobalShoppingItem = () => setGlobalShoppingList(p => [...p, { item: "", forWhom: "", isBought: false }]);
+            const removeGlobalShoppingItem = (idx) => setGlobalShoppingList(p => p.filter((_, i) => i !== idx));
+            const updateGlobalShoppingItem = (idx, field, val) => setGlobalShoppingList(p => p.map((s, i) => i === idx ? { ...s, [field]: val } : s));
+            const saveGlobalShopping = () => {
+                const validList = globalShoppingList.filter(s => s.item.trim() !== "");
+                setTrip(prev => ({ ...prev, globalShoppingList: validList }));
+                setIsModalOpen(false);
+            };
 
             const delItem = (id) => { setEditingId(id); setModalType('delete'); setIsModalOpen(true); };
             const delExp = (id) => { setEditingId(id); setModalType('deleteExp'); setIsModalOpen(true); };
             const delDay = () => { setModalType('deleteDay'); setIsModalOpen(true); };
             const confirmSort = () => { setModalType('sort'); setIsModalOpen(true); };
-            
             const doDel = () => { setTrip(prev => ({ ...prev, activities: prev.activities.filter(a => a.id !== editingId) })); setIsModalOpen(false); };
+            
             const doDelExp = () => { setTrip(prev => ({ ...prev, expenses: prev.expenses.filter(e => e.id !== editingId) })); setIsModalOpen(false); };
             const doDelDay = () => {
                 setTrip(prev => {
@@ -511,57 +504,34 @@
             const openMemoModal = () => { setMemoText(trip.memo || ""); setModalType('memo'); setIsModalOpen(true); };
             const saveMemo = () => { setTrip(prev => ({ ...prev, memo: memoText })); setIsModalOpen(false); };
 
+            const openFlightModal = () => {
+                const existing = (trip.passengers && trip.passengers.length > 0 ? trip.passengers : [{ id: Date.now(), name: "我", flightOut: "", pnrOut: "", seatOut: "", terminalOut: "", noteOut: "", flightIn: "", pnrIn: "", seatIn: "", terminalIn: "", noteIn: "", hasCarryOnOut: true, carryOnKgOut: "", checkedKgOut: "", hasCarryOnIn: true, carryOnKgIn: "", checkedKgIn: "", note: "" }])
+                    .map(p => ({
+                        ...p,
+                        terminalOut: p.terminalOut || "", terminalIn: p.terminalIn || "", noteOut: p.noteOut || "", noteIn: p.noteIn || "",
+                        hasCarryOnOut: p.hasCarryOnOut !== undefined ? p.hasCarryOnOut : (p.hasCarryOn !== undefined ? p.hasCarryOn : true),
+                        carryOnKgOut: p.carryOnKgOut || p.carryOnKg || "", checkedKgOut: p.checkedKgOut || p.checkedKg || "",
+                        hasCarryOnIn: p.hasCarryOnIn !== undefined ? p.hasCarryOnIn : (p.hasCarryOn !== undefined ? p.hasCarryOn : true),
+                        carryOnKgIn: p.carryOnKgIn || p.carryOnKg || "", checkedKgIn: p.checkedKgIn || p.checkedKg || ""
+                    }));
+                setFlightFormData(existing); setModalType('flight'); setIsModalOpen(true);
+            };
+            const updatePassenger = (idx, field, val) => { const newData = [...flightFormData]; newData[idx][field] = val; setFlightFormData(newData); };
+            const addPassenger = () => { setFlightFormData([...flightFormData, { id: Date.now(), name: "旅伴", flightOut: "", pnrOut: "", seatOut: "", terminalOut: "", noteOut: "", flightIn: "", pnrIn: "", seatIn: "", terminalIn: "", noteIn: "", hasCarryOnOut: true, carryOnKgOut: "", checkedKgOut: "", hasCarryOnIn: true, carryOnKgIn: "", checkedKgIn: "", note: "" }]); };
+            const removePassenger = (idx) => { if (flightFormData.length <= 1) return; const newData = flightFormData.filter((_, i) => i !== idx); setFlightFormData(newData); };
+            const saveFlights = () => { setTrip(prev => ({ ...prev, passengers: flightFormData })); setIsModalOpen(false); };
+
             const handleBackup = () => { setModalType('backup'); setIsModalOpen(true); };
             const handleExport = () => { setExportText(JSON.stringify(trip)); setModalType('export'); setIsModalOpen(true); }; 
-            
-            const resetToDefault = () => {
-                if(confirm("確定要重置為預設行程嗎？這將會清除您目前的所有修改。")) {
-                    setTrip(INITIAL_DATA);
-                    setIsModalOpen(false);
-                }
-            };
-
-            const downloadBackup = () => {
-                const dataStr = JSON.stringify(trip, null, 2);
-                const blob = new Blob([dataStr], { type: "application/json" });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = `trip_backup_${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            };
-
+            const resetToDefault = () => { if(confirm("確定要重置？")) { setTrip(INITIAL_DATA); setIsModalOpen(false); } };
+            const downloadBackup = () => { const dataStr = JSON.stringify(trip, null, 2); const blob = new Blob([dataStr], { type: "application/json" }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = `trip_backup.json`; document.body.appendChild(link); link.click(); document.body.removeChild(link); };
             const triggerFileUpload = () => { fileInputRef.current.click(); };
-            const handleFileUpload = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const p = JSON.parse(e.target.result);
-                        if (p.activities) { 
-                            if (!p.expenses) p.expenses = [];
-                            if (!p.memo) p.memo = "";
-                            setTrip(p); 
-                            setIsModalOpen(false); 
-                            alert("讀取成功！"); 
-                        } else { setErrorMsg("檔案格式錯誤"); }
-                    } catch (err) { setErrorMsg("無效的檔案"); }
-                };
-                reader.readAsText(file);
-            };
-
+            const handleFileUpload = (e) => { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = (e) => { try { const p = JSON.parse(e.target.result); if (p.activities) { if (!p.expenses) p.expenses = []; if (!p.memo) p.memo = ""; if (!p.passengers) p.passengers = []; if(!p.globalShoppingList) p.globalShoppingList = []; setTrip(p); setIsModalOpen(false); alert("讀取成功！"); } else { setErrorMsg("格式錯誤"); } } catch (err) { setErrorMsg("無效檔案"); } }; reader.readAsText(file); };
             const openAuthModal = () => { setModalType('auth'); setIsModalOpen(true); };
-
-            // Manual Copy/Paste Handlers
             const openTransferModal = () => { setExportText(JSON.stringify(trip)); setImportText(""); setErrorMsg(""); setModalType('backup'); setIsModalOpen(true); };
-            const doCopyCode = () => { navigator.clipboard.writeText(exportText); alert("代碼已複製！請貼到 Line 或 Email 傳送。"); };
-            const doPasteCode = () => { try { const p = JSON.parse(importText); if(p.activities) { if(!p.expenses) p.expenses=[]; setTrip(p); setIsModalOpen(false); alert("資料已轉移成功！"); } else setErrorMsg("代碼格式錯誤"); } catch(e){ setErrorMsg("無效的代碼"); } };
+            const doCopyCode = () => { navigator.clipboard.writeText(exportText); alert("複製成功"); };
+            const doPasteCode = () => { try { const p = JSON.parse(importText); if(p.activities) { if(!p.expenses) p.expenses=[]; if(!p.passengers) p.passengers=[]; if(!p.globalShoppingList) p.globalShoppingList = []; setTrip(p); setIsModalOpen(false); alert("還原成功"); } else setErrorMsg("錯誤"); } catch(e){ setErrorMsg("錯誤"); } };
 
-
-            // Stats
             const statsData = useMemo(() => {
                 const breakdown = { sight: 0, food: 0, transport: 0, stay: 0, other: 0 };
                 trip.activities.forEach(a => { if (breakdown[a.type] !== undefined) breakdown[a.type] += (a.cost || 0); });
@@ -580,31 +550,44 @@
                 <div className="min-h-screen supports-[min-h-[100dvh]]:min-h-[100dvh] w-full bg-slate-50 text-slate-800 pb-24 md:pb-0 overscroll-y-none touch-pan-y relative">
                     {showSavedToast && <div className="fixed bottom-20 left-4 bg-teal-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-50 animate-toast flex items-center gap-1"><LucideIcon name="Check" size={12}/> 已儲存 {syncStatus==='syncing' && '(同步中...)'}</div>}
                     
-                    {/* Fixed Header - Added pt-safe for top area */}
-                    <header className="bg-teal-600 text-white p-4 shadow-lg fixed top-0 left-0 right-0 z-40 safe-top flex justify-between items-end">
+                    <header className="bg-teal-600 text-white p-4 shadow-lg fixed top-0 left-0 right-0 z-40 safe-top flex justify-between items-end h-[100px]">
                         <div className="flex-1 min-w-0 pr-4">
                             <div className="flex items-center gap-2 mb-1"><LucideIcon name="Plane" className="text-teal-200"/><input value={trip.tripName} onChange={e => setTrip(p => ({...p, tripName: e.target.value}))} className="bg-transparent font-bold text-xl outline-none border-b border-teal-300 w-full"/></div>
                             <div className="text-teal-100 text-sm flex items-center gap-2"><input type="date" value={trip.startDate} onChange={e => setTrip(p => ({...p, startDate: e.target.value}))} className="bg-transparent outline-none"/><span>• {trip.days} 天</span></div>
                         </div>
-                        
-                        {/* Right side buttons - compact grid for mobile */}
-                        <div className="grid grid-cols-3 gap-1.5 justify-items-end shrink-0">
-                             {/* Row 1 */}
-                             <button onClick={openAuthModal} className={`p-1.5 rounded-full transition-colors ${user ? 'bg-teal-500 text-white' : 'bg-white/20 hover:bg-white/30'}`} title="雲端同步">
-                                <LucideIcon name="Cloud" size={18} />
-                            </button>
-                            <button onClick={openMemoModal} className="p-1.5 rounded-full bg-white/20 hover:bg-white/30" title="筆記"><LucideIcon name="StickyNote" size={18}/></button>
-                            <button onClick={()=> {setModalType('stats'); setIsModalOpen(true)}} className="p-1.5 rounded-full bg-white/20 hover:bg-white/30"><LucideIcon name="PieChart" size={18}/></button>
-                            
-                             {/* Row 2 */}
-                             <div className="col-start-2">
-                                <button onClick={()=> {setModalType('settings'); setIsModalOpen(true)}} className="p-1.5 rounded-full bg-white/20 hover:bg-white/30"><LucideIcon name="Settings" size={18}/></button>
-                            </div>
-                            <button onClick={() => setIsSummaryView(!isSummaryView)} className={`p-1.5 rounded-full flex gap-1 items-center ${isSummaryView?'bg-white/30 ring-2':'bg-white/20'}`}>{isSummaryView ? <LucideIcon name="ArrowLeft" size={18}/> : <LucideIcon name="List" size={18}/>}</button>
+                        {/* Scrollable Toolbar for Icons */}
+                        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1 max-w-[50%]">
+                             <div className="flex flex-col items-center min-w-[40px] cursor-pointer" onClick={() => setIsSummaryView(!isSummaryView)}>
+                                 <div className={`p-1.5 rounded-full mb-0.5 ${isSummaryView?'bg-white/30 ring-2':'bg-white/20'}`}><LucideIcon name={isSummaryView ? "ArrowLeft" : "List"} size={18}/></div>
+                                 <span className="text-[10px] whitespace-nowrap">{isSummaryView ? '返回' : '總覽'}</span>
+                             </div>
+                             <div className="flex flex-col items-center min-w-[40px] cursor-pointer" onClick={()=> {setModalType('stats'); setIsModalOpen(true)}}>
+                                 <div className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 mb-0.5"><LucideIcon name="PieChart" size={18}/></div>
+                                 <span className="text-[10px] whitespace-nowrap">花費</span>
+                             </div>
+                             <div className="flex flex-col items-center min-w-[40px] cursor-pointer" onClick={openGlobalShoppingModal}>
+                                 <div className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 mb-0.5"><LucideIcon name="ShoppingBag" size={18}/></div>
+                                 <span className="text-[10px] whitespace-nowrap">清單</span>
+                             </div>
+                             <div className="flex flex-col items-center min-w-[40px] cursor-pointer" onClick={openMemoModal}>
+                                 <div className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 mb-0.5"><LucideIcon name="StickyNote" size={18}/></div>
+                                 <span className="text-[10px] whitespace-nowrap">筆記</span>
+                             </div>
+                             <div className="flex flex-col items-center min-w-[40px] cursor-pointer" onClick={openFlightModal}>
+                                 <div className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 mb-0.5"><LucideIcon name="Ticket" size={18}/></div>
+                                 <span className="text-[10px] whitespace-nowrap">機票</span>
+                             </div>
+                             <div className="flex flex-col items-center min-w-[40px] cursor-pointer" onClick={openAuthModal}>
+                                 <div className={`p-1.5 rounded-full mb-0.5 ${user ? 'bg-teal-500 text-white' : 'bg-white/20'}`}><LucideIcon name="Cloud" size={18} /></div>
+                                 <span className="text-[10px] whitespace-nowrap">雲端</span>
+                             </div>
+                             <div className="flex flex-col items-center min-w-[40px] cursor-pointer" onClick={()=> {setModalType('settings'); setIsModalOpen(true)}}>
+                                 <div className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 mb-0.5"><LucideIcon name="Settings" size={18}/></div>
+                                 <span className="text-[10px] whitespace-nowrap">設定</span>
+                             </div>
                         </div>
                     </header>
 
-                    {/* Main Content with top padding to push it below fixed header - adjusted for new header height */}
                     <main className="max-w-4xl mx-auto p-4 md:flex gap-6 mt-4 pt-36">
                         {isSummaryView ? (
                             <div className="w-full space-y-6">
@@ -672,7 +655,19 @@
                                                                 {displayLinks.map((l, i) => { const ld = getLinkData(l.url); return <a key={i} href={l.url} target="_blank" className={`text-xs px-2 border rounded-full flex gap-1 items-center ${ld.color}`} onClick={e=>e.stopPropagation()}><LucideIcon name={ld.icon} size={14}/> {l.title || ld.label}</a> })}
                                                             </div>
                                                         </div>
-                                                        {item.note && <p className="text-slate-500 text-sm">{item.note}</p>}
+                                                        {item.shoppingList && item.shoppingList.length > 0 && (
+                                                            <div className="mt-2 pt-2 border-t border-dashed border-slate-200">
+                                                                <p className="text-xs text-slate-400 mb-1 flex items-center gap-1"><LucideIcon name="ShoppingBag" size={12}/> 購物清單</p>
+                                                                {item.shoppingList.map((s, i) => (
+                                                                    <div key={i} className="text-sm flex items-center gap-2 text-slate-600" onClick={() => toggleActivityShoppingItem(item.id, i)}>
+                                                                        <input type="checkbox" checked={s.isBought} readOnly className="w-3 h-3 text-teal-600 rounded pointer-events-none"/>
+                                                                        <span className={s.isBought?"line-through text-slate-400":""}>{s.item}</span>
+                                                                        {s.forWhom && <span className="text-xs bg-slate-100 px-1 rounded text-slate-400">@{s.forWhom}</span>}
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                        {item.note && <p className="text-slate-500 text-sm mt-2">{item.note}</p>}
                                                         {item.cost > 0 && <div className="flex items-center gap-1 text-slate-600 text-sm font-medium mt-1 pt-1 border-t"><LucideIcon name="DollarSign" size={14}/> {item.cost.toLocaleString()}</div>}
                                                     </div>
                                                 </div>
@@ -712,7 +707,7 @@
                     {isModalOpen && (
                         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-modal">
                             <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden max-h-[90vh] flex flex-col z-50">
-                                <div className="bg-slate-50 p-4 border-b flex justify-between shrink-0"><h3 className="font-bold text-lg">{modalType==='delete'?'確認刪除':modalType==='deleteExp'?'刪除花費':modalType==='deleteDay'?'刪除天數':modalType==='backup'?'📲 跨裝置轉移':modalType==='sort'?'排序':modalType==='settings'?'設定':modalType==='ai_result'?'AI 建議':modalType==='stats'?'花費統計':modalType==='expense'?'記帳':modalType==='memo'?'重要筆記':modalType==='auth'?'雲端登入':editingId?'編輯':'新增'}</h3><button onClick={()=>setIsModalOpen(false)} className="text-slate-400">✕</button></div>
+                                <div className="bg-slate-50 p-4 border-b flex justify-between shrink-0"><h3 className="font-bold text-lg">{modalType==='delete'?'確認刪除':modalType==='deleteExp'?'刪除花費':modalType==='deleteDay'?'刪除天數':modalType==='backup'?'📲 跨裝置轉移':modalType==='sort'?'排序':modalType==='settings'?'設定':modalType==='ai_result'?'AI 建議':modalType==='stats'?'花費統計':modalType==='expense'?'記帳':modalType==='memo'?'重要筆記':modalType==='auth'?'雲端登入':modalType==='flight'?'航班資訊':modalType==='shopping'?'額外購物清單':editingId?'編輯':'新增'}</h3><button onClick={()=>setIsModalOpen(false)} className="text-slate-400">✕</button></div>
                                 <div className="p-6 space-y-4 overflow-y-auto">
                                     {/* ... Modal Contents ... */}
                                     {(modalType==='delete'||modalType==='deleteDay'||modalType==='deleteExp'||modalType==='sort') ? (
@@ -720,6 +715,93 @@
                                             <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4"><LucideIcon name="AlertTriangle" size={32}/></div>
                                             <p className="mb-6 text-slate-600">{modalType==='sort'?'自動依時間排序行程？':'確定要刪除嗎？無法復原。'}</p>
                                             <div className="flex gap-3"><button onClick={()=>setIsModalOpen(false)} className="flex-1 py-3 bg-slate-100 rounded-xl font-bold">取消</button><button onClick={modalType==='delete'?doDel:modalType==='deleteExp'?doDelExp:modalType==='sort'?autoSortByTime:doDelDay} className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold">確認</button></div>
+                                        </div>
+                                    ) : modalType === 'flight' ? (
+                                        <div className="space-y-4">
+                                            {flightFormData.map((p, idx) => (
+                                                <div key={p.id} className="bg-slate-50 p-4 rounded-xl border relative">
+                                                    <div className="flex justify-between items-center mb-4 pb-2 border-b border-slate-200">
+                                                        <input className="font-bold bg-transparent text-lg w-full outline-none text-slate-700 focus:border-b-2 focus:border-teal-500 transition-colors" value={p.name} onChange={e=>updatePassenger(idx, 'name', e.target.value)} placeholder="旅客姓名" />
+                                                        {flightFormData.length > 1 && <button onClick={()=>removePassenger(idx)} className="text-red-400 p-1 hover:bg-red-50 rounded"><LucideIcon name="Trash2" size={16}/></button>}
+                                                    </div>
+                                                    
+                                                    {/* 去程區塊 */}
+                                                    <div className="mb-4">
+                                                        <p className="text-xs font-bold text-teal-600 mb-2 flex items-center gap-1"><LucideIcon name="ArrowUp" size={12}/> 去程 (Outbound)</p>
+                                                        <div className="space-y-2">
+                                                            <input className="w-full bg-white border rounded p-2 text-sm outline-none focus:ring-1 focus:ring-teal-500" value={p.flightOut} onChange={e=>updatePassenger(idx, 'flightOut', e.target.value)} placeholder="航班代號 / 時間 / 日期" />
+                                                            <div className="grid grid-cols-3 gap-2">
+                                                                <input className="w-full bg-white border rounded p-2 text-sm outline-none focus:ring-1 focus:ring-teal-500" value={p.pnrOut} onChange={e=>updatePassenger(idx, 'pnrOut', e.target.value)} placeholder="訂位代號" />
+                                                                <input className="w-full bg-white border rounded p-2 text-sm outline-none focus:ring-1 focus:ring-teal-500" value={p.seatOut} onChange={e=>updatePassenger(idx, 'seatOut', e.target.value)} placeholder="座位" />
+                                                                <input className="w-full bg-white border rounded p-2 text-sm outline-none focus:ring-1 focus:ring-teal-500" value={p.terminalOut} onChange={e=>updatePassenger(idx, 'terminalOut', e.target.value)} placeholder="航廈" />
+                                                            </div>
+                                                            <input className="w-full bg-white border rounded p-2 text-sm outline-none focus:ring-1 focus:ring-teal-500" value={p.noteOut} onChange={e=>updatePassenger(idx, 'noteOut', e.target.value)} placeholder="去程備註 (餐點...)" />
+                                                            
+                                                            {/* 去程行李 */}
+                                                            <div className="bg-teal-50/50 p-2 rounded border border-teal-100 mt-2">
+                                                                <div className="flex items-center gap-2 mb-1">
+                                                                    <input type="checkbox" checked={p.hasCarryOnOut} onChange={e=>updatePassenger(idx, 'hasCarryOnOut', e.target.checked)} className="w-4 h-4 text-teal-600 rounded" />
+                                                                    <span className="text-xs text-slate-600">手提</span>
+                                                                    {p.hasCarryOnOut && <input className="w-16 bg-white border rounded p-1 text-xs text-center outline-none" value={p.carryOnKgOut} onChange={e=>updatePassenger(idx, 'carryOnKgOut', e.target.value)} placeholder="7kg" />}
+                                                                </div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-xs text-slate-600 w-8">托運</span>
+                                                                    <input className="flex-1 bg-white border rounded p-1 text-xs outline-none" value={p.checkedKgOut} onChange={e=>updatePassenger(idx, 'checkedKgOut', e.target.value)} placeholder="23kg / 1件" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* 回程區塊 */}
+                                                    <div className="mb-4 pt-3 border-t border-dashed border-slate-200">
+                                                        <p className="text-xs font-bold text-orange-500 mb-2 flex items-center gap-1"><LucideIcon name="ArrowDown" size={12}/> 回程 (Return)</p>
+                                                        <div className="space-y-2">
+                                                            <input className="w-full bg-white border rounded p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500" value={p.flightIn} onChange={e=>updatePassenger(idx, 'flightIn', e.target.value)} placeholder="航班代號 / 時間 / 日期" />
+                                                            <div className="grid grid-cols-3 gap-2">
+                                                                <input className="w-full bg-white border rounded p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500" value={p.pnrIn} onChange={e=>updatePassenger(idx, 'pnrIn', e.target.value)} placeholder="訂位代號" />
+                                                                <input className="w-full bg-white border rounded p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500" value={p.seatIn} onChange={e=>updatePassenger(idx, 'seatIn', e.target.value)} placeholder="座位" />
+                                                                <input className="w-full bg-white border rounded p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500" value={p.terminalIn} onChange={e=>updatePassenger(idx, 'terminalIn', e.target.value)} placeholder="航廈" />
+                                                            </div>
+                                                            <input className="w-full bg-white border rounded p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500" value={p.noteIn} onChange={e=>updatePassenger(idx, 'noteIn', e.target.value)} placeholder="回程備註 (免稅品...)" />
+                                                            
+                                                            {/* 回程行李 */}
+                                                            <div className="bg-orange-50/50 p-2 rounded border border-orange-100 mt-2">
+                                                                <div className="flex items-center gap-2 mb-1">
+                                                                    <input type="checkbox" checked={p.hasCarryOnIn} onChange={e=>updatePassenger(idx, 'hasCarryOnIn', e.target.checked)} className="w-4 h-4 text-orange-600 rounded" />
+                                                                    <span className="text-xs text-slate-600">手提</span>
+                                                                    {p.hasCarryOnIn && <input className="w-16 bg-white border rounded p-1 text-xs text-center outline-none" value={p.carryOnKgIn} onChange={e=>updatePassenger(idx, 'carryOnKgIn', e.target.value)} placeholder="7kg" />}
+                                                                </div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-xs text-slate-600 w-8">托運</span>
+                                                                    <input className="flex-1 bg-white border rounded p-1 text-xs outline-none" value={p.checkedKgIn} onChange={e=>updatePassenger(idx, 'checkedKgIn', e.target.value)} placeholder="30kg / 2件" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="pt-2 border-t border-slate-100"><p className="text-xs text-slate-400 mb-1">通用備註</p><input className="w-full bg-white border rounded p-2 text-sm outline-none" value={p.note} onChange={e=>updatePassenger(idx, 'note', e.target.value)} placeholder="護照號碼、會員卡號..." /></div>
+                                                </div>
+                                            ))}
+                                            <button onClick={addPassenger} className="w-full py-3 border-2 border-dashed border-slate-300 text-slate-500 rounded-xl hover:border-teal-500 hover:text-teal-600 font-bold flex items-center justify-center gap-2 transition-colors"><LucideIcon name="Plus" size={18}/> 新增旅客</button>
+                                            <button onClick={saveFlights} className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl shadow-lg mt-4 hover:bg-teal-700 transition-colors">儲存航班資訊</button>
+                                        </div>
+                                    ) : modalType === 'shopping' ? (
+                                        <div className="space-y-4">
+                                            <h4 className="font-bold text-slate-700 text-sm">額外購物清單</h4>
+                                            <div className="space-y-2">
+                                                {globalShoppingList.map((item, idx) => (
+                                                    <div key={idx} className="flex gap-2 items-center bg-slate-50 p-2 rounded-lg border border-slate-100">
+                                                        <input type="checkbox" checked={item.isBought} onChange={e=>updateGlobalShoppingItem(idx, 'isBought', e.target.checked)} className="w-5 h-5 text-teal-600 rounded custom-checkbox" />
+                                                        <div className="flex-1 grid grid-cols-3 gap-2">
+                                                            <input className={`col-span-2 bg-transparent text-sm outline-none ${item.isBought ? 'line-through text-slate-400' : ''}`} placeholder="購買項目" value={item.item} onChange={e=>updateGlobalShoppingItem(idx, 'item', e.target.value)} />
+                                                            <input className="bg-white border rounded px-1 text-xs text-center outline-none h-6 self-center" placeholder="幫誰買" value={item.forWhom} onChange={e=>updateGlobalShoppingItem(idx, 'forWhom', e.target.value)} />
+                                                        </div>
+                                                        <button onClick={()=>removeGlobalShoppingItem(idx)} className="text-slate-300 hover:text-red-400"><LucideIcon name="Trash2" size={16}/></button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <button onClick={addGlobalShoppingItem} className="w-full py-2 border-2 border-dashed border-slate-300 text-slate-500 rounded-lg hover:border-teal-500 hover:text-teal-600 text-sm font-bold flex justify-center items-center gap-1"><LucideIcon name="Plus" size={14}/> 新增項目</button>
+                                            <button onClick={saveGlobalShopping} className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl shadow-lg mt-2">儲存清單</button>
                                         </div>
                                     ) : modalType === 'backup' ? (
                                         <div className="space-y-6">
@@ -805,7 +887,31 @@
                                                     <div className="grid grid-cols-2 gap-4"><InputField label="時間" type="time" name="time" value={formData.time} onChange={e=>setFormData({...formData, time: e.target.value})}/><div><label className="block text-xs font-bold text-slate-500 mb-1">類型</label><select value={formData.type} onChange={e=>setFormData({...formData, type: e.target.value})} className="w-full bg-slate-50 border rounded-lg px-3 py-2 outline-none text-base">{Object.entries(TYPE_CONFIG).map(([k,c])=><option key={k} value={k}>{c.label}</option>)}</select></div></div>
                                                     <InputField label="名稱" name="title" value={formData.title} onChange={handleInputChange}/>
                                                     <InputField label="地點" name="location" value={formData.location} onChange={handleInputChange}/>
-                                                    <div><label className="block text-xs font-bold text-slate-500 mb-1">連結</label>{formData.links.map((l, i) => (<div key={i} className="flex gap-2 mb-2"><input className="w-1/3 bg-slate-50 border rounded px-2 py-2 text-sm" placeholder="標題" value={l.title} onChange={e=>updateLink(i,'title',e.target.value)}/><input className="flex-1 bg-slate-50 border rounded px-2 py-2 text-sm" placeholder="網址" value={l.url} onChange={e=>updateLink(i,'url',e.target.value)}/><button onClick={()=>removeLink(i)} className="text-slate-400"><LucideIcon name="Trash2" size={18}/></button></div>))}<button onClick={addLink} className="text-xs text-teal-600 font-bold flex items-center gap-1"><LucideIcon name="Plus" size={14}/> 新增連結</button></div>
+                                                    
+                                                    <div>
+                                                        <label className="block text-xs font-bold text-slate-500 mb-1">連結</label>
+                                                        {formData.links.map((l, i) => (
+                                                            <div key={i} className="flex gap-2 mb-2">
+                                                                <input className="w-1/3 bg-slate-50 border rounded px-2 py-2 text-sm" placeholder="標題" value={l.title} onChange={e=>updateLink(i,'title',e.target.value)} />
+                                                                <input className="flex-1 bg-slate-50 border rounded px-2 py-2 text-sm" placeholder="網址" value={l.url} onChange={e=>updateLink(i,'url',e.target.value)} />
+                                                                <button onClick={()=>removeLink(i)} className="text-slate-400 hover:text-red-500"><LucideIcon name="Trash2" size={18}/></button>
+                                                            </div>
+                                                        ))}
+                                                        <button onClick={addLink} className="text-xs text-teal-600 font-bold flex items-center gap-1 hover:text-teal-700 mb-2"><LucideIcon name="Plus" size={14}/> 新增連結</button>
+                                                    </div>
+
+                                                    <div className="border-t border-slate-100 pt-2 mb-2">
+                                                        <label className="block text-xs font-bold text-slate-500 mb-1 flex items-center gap-1"><LucideIcon name="ShoppingBag" size={12}/> 購物/代購清單</label>
+                                                        {formData.shoppingList.map((s, i) => (
+                                                            <div key={i} className="flex gap-2 mb-2">
+                                                                <input className="flex-1 bg-slate-50 border rounded px-2 py-2 text-sm" placeholder="要買什麼" value={s.item} onChange={e=>updateShoppingItem(i, 'item', e.target.value)} />
+                                                                <input className="w-1/4 bg-slate-50 border rounded px-2 py-2 text-sm" placeholder="幫誰買" value={s.forWhom} onChange={e=>updateShoppingItem(i, 'forWhom', e.target.value)} />
+                                                                <button onClick={()=>removeShoppingItem(i)} className="text-slate-400 hover:text-red-500"><LucideIcon name="Trash2" size={18}/></button>
+                                                            </div>
+                                                        ))}
+                                                        <button onClick={addShoppingItem} className="text-xs text-indigo-600 font-bold flex items-center gap-1 hover:text-indigo-700"><LucideIcon name="Plus" size={14}/> 新增購買項目</button>
+                                                    </div>
+
                                                     <CostInput label="花費" value={formData.cost} onChange={handleInputChange} />
                                                     <div><label className="block text-xs font-bold text-slate-500 mb-1">備註</label><textarea name="note" rows="3" value={formData.note} onChange={handleInputChange} className="w-full bg-slate-50 border rounded-lg px-3 py-2 outline-none resize-none text-base"></textarea></div>
                                                 </>
