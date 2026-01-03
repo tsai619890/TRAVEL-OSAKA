@@ -2,12 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0d9488"><!DOCTYPE html>
-<html lang="zh-TW">
-<head><!DOCTYPE html>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"><!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -26,9 +21,9 @@
     <style>
         body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
         
-        /* 調整安全區域：改為 +40px，比之前提昇 1/3 的位置 */
+        /* 修改這裡：使用 max() 強制設定最小頂部間距為 60px + 安全區域，確保一定會往下推 */
         .safe-top { 
-            padding-top: calc(env(safe-area-inset-top) + 40px) !important; 
+            padding-top: max(calc(env(safe-area-inset-top) + 10px), 60px) !important; 
             height: auto;
         }
         
@@ -95,7 +90,7 @@
             Table: <><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></>,
             Link: <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>,
             PieChart: <><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></>,
-            Receipt: <><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17V7"/></>,
+            Receipt: <><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17V7"/></>,
             StickyNote: <><path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"/><path d="M15 3v6h6"/></>,
             Save: <><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></>,
             Smartphone: <><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></>,
@@ -149,7 +144,13 @@
           "days": 5,
           "currency": "TWD",
           "memo": "",
-          "dayTitles": { "1": "出發與難波探索", "2": "日本環球影城全日", "3": "自由行程", "4": "自由行程", "5": "購物與歸賦" },
+          "dayTitles": {
+            "1": "出發與難波探索",
+            "2": "日本環球影城全日",
+            "3": "自由行程",
+            "4": "自由行程",
+            "5": "購物與歸賦"
+          },
           "accommodations": {
             "1": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 },
             "2": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 },
