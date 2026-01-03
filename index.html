@@ -8,14 +8,7 @@
     <meta name="theme-color" content="#0d9488">
     <title>旅遊行程規劃 (雲端版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script><!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"><!DOCTYPE html>
+    <!-- Supabase Client --><!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -34,10 +27,10 @@
     <style>
         body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
         
-        /* 恢復原本的邏輯，但增加足夠的緩衝空間 */
-        /* env(safe-area-inset-top) 是瀏海/動態島的高度，再 +20px 讓按鈕不要貼在邊緣 */
+        /* 增加安全區域緩衝至 30px，確保避開動態島 */
         .safe-top { 
-            padding-top: calc(env(safe-area-inset-top) + 20px); 
+            padding-top: calc(env(safe-area-inset-top) + 30px) !important; 
+            height: auto;
         }
         
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
@@ -103,7 +96,7 @@
             Table: <><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></>,
             Link: <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>,
             PieChart: <><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></>,
-            Receipt: <><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17V7"/></>,
+            Receipt: <><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17V7"/></>,
             StickyNote: <><path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"/><path d="M15 3v6h6"/></>,
             Save: <><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></>,
             Smartphone: <><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></>,
@@ -150,13 +143,20 @@
             other: { icon: "MapPin", color: 'bg-gray-100 text-gray-600', label: '其他/購物', chartColor: '#64748b' } 
         };
         
+        // --- 預設行程資料 (更新為使用者提供的行程) ---
         const INITIAL_DATA = {
           "tripName": "大阪環球影城五日遊",
           "startDate": "2025-02-05",
           "days": 5,
           "currency": "TWD",
           "memo": "",
-          "dayTitles": { "1": "出發與難波探索", "2": "日本環球影城全日", "3": "自由行程", "4": "自由行程", "5": "購物與歸賦" },
+          "dayTitles": {
+            "1": "出發與難波探索",
+            "2": "日本環球影城全日",
+            "3": "自由行程",
+            "4": "自由行程",
+            "5": "購物與歸賦"
+          },
           "accommodations": {
             "1": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 },
             "2": { "title": "大阪難波飯店", "location": "相鐵 FRESA INN 大阪難波站前", "cost": 0 },
@@ -618,6 +618,7 @@
                 <div className="min-h-screen supports-[min-h-[100dvh]]:min-h-[100dvh] w-full bg-slate-50 text-slate-800 pb-24 md:pb-0 overscroll-y-none touch-pan-y relative">
                     {showSavedToast && <div className="fixed bottom-20 left-4 bg-teal-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg z-50 animate-toast flex items-center gap-1"><LucideIcon name="Check" size={12}/> 已儲存 {syncStatus==='syncing' && '(同步中...)'}</div>}
                     
+                    {/* Fixed Header - Added pt-safe for top area */}
                     <header className="bg-teal-600 text-white p-4 shadow-lg fixed top-0 left-0 right-0 z-40 safe-top flex justify-between items-end h-[100px]">
                         <div className="flex-1 min-w-0 pr-4">
                             <div className="flex items-center gap-2 mb-1"><LucideIcon name="Plane" className="text-teal-200"/><input value={trip.tripName} onChange={e => setTrip(p => ({...p, tripName: e.target.value}))} className="bg-transparent font-bold text-xl outline-none border-b border-teal-300 w-full"/></div>
@@ -1015,5 +1016,7 @@
         }
         const root = ReactDOM.createRoot(document.getElementById('root')); root.render(<App />);
     </script>
+</body>
+</html>
 </body>
 </html>
