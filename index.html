@@ -15,6 +15,10 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"><!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -30,10 +34,10 @@
     <style>
         body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
         
-        /* 修改這裡：調整為 +25px，避開動態島但不會太厚 */
+        /* 恢復原本的邏輯，但增加足夠的緩衝空間 */
+        /* env(safe-area-inset-top) 是瀏海/動態島的高度，再 +20px 讓按鈕不要貼在邊緣 */
         .safe-top { 
-            padding-top: calc(env(safe-area-inset-top) + 25px) !important; 
-            height: auto;
+            padding-top: calc(env(safe-area-inset-top) + 20px); 
         }
         
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
@@ -99,7 +103,7 @@
             Table: <><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></>,
             Link: <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>,
             PieChart: <><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></>,
-            Receipt: <><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17V7"/></>,
+            Receipt: <><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17V7"/></>,
             StickyNote: <><path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"/><path d="M15 3v6h6"/></>,
             Save: <><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></>,
             Smartphone: <><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></>,
@@ -247,7 +251,7 @@
             const dragItem = useRef();
             const dragOverItem = useRef();
             const fileInputRef = useRef(null);
-            const tripRef = useRef();
+            const tripRef = useRef(); // Fix: useRef for cloud sync check to avoid stale closure
 
             // State
             const [trip, setTrip] = useState(() => {
@@ -293,9 +297,12 @@
             const [authPass, setAuthPass] = useState("");
             const [isLoginMode, setIsLoginMode] = useState(true);
 
+            // Update ref whenever trip changes
             useEffect(() => { tripRef.current = trip; }, [trip]);
 
+            // --- Effects ---
             useEffect(() => {
+                // Check Auth Status
                 const checkUser = async () => {
                     const { data: { session } } = await supabase.auth.getSession();
                     setUser(session?.user || null);
@@ -303,6 +310,7 @@
                     if (session?.user) loadFromCloud(session.user.id);
                 };
                 checkUser();
+                
                 const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
                     setUser(session?.user || null);
                     if (session?.user) loadFromCloud(session.user.id);
@@ -311,8 +319,14 @@
             }, []);
 
             useEffect(() => { 
+                // Local Save
                 localStorage.setItem('travelApp_data', JSON.stringify(trip)); 
-                if (user) saveToCloud(trip);
+                
+                // Cloud Sync (Auto Save)
+                if (user) {
+                    saveToCloud(trip);
+                }
+
                 setShowSavedToast(true);
                 const timer = setTimeout(() => setShowSavedToast(false), 2000);
                 return () => clearTimeout(timer);
@@ -320,42 +334,75 @@
             
             useEffect(() => { localStorage.setItem('gemini_api_key', apiKey); }, [apiKey]);
 
+            // --- Cloud Functions ---
             const loadFromCloud = async (userId) => {
                 setSyncStatus("syncing");
-                const { data } = await supabase.from('trips').select('trip_data').eq('user_id', userId).single();
+                const { data, error } = await supabase
+                    .from('trips')
+                    .select('trip_data')
+                    .eq('user_id', userId)
+                    .single();
+                
                 if (data && data.trip_data) {
-                    const currentTrip = tripRef.current;
+                    const currentTrip = tripRef.current; // Use Ref to get latest state
+                    // Check if cloud data is different from current local data
                     const isLocalDefault = JSON.stringify(currentTrip) === JSON.stringify(INITIAL_DATA);
                     const isDifferent = JSON.stringify(currentTrip) !== JSON.stringify(data.trip_data);
+
                     if (isDifferent) {
-                        if (isLocalDefault) setTrip(data.trip_data);
-                        else if (confirm("發現雲端有不同的行程備份，是否要下載覆蓋目前的進度？\n(按「取消」則保留目前裝置上的修改)")) setTrip(data.trip_data);
+                        if (isLocalDefault) {
+                            // If local is default (blank), just load cloud data automatically
+                            setTrip(data.trip_data);
+                        } else {
+                            // If local has changes, ask user
+                            if (confirm("發現雲端有不同的行程備份，是否要下載覆蓋目前的進度？\n(按「取消」則保留目前裝置上的修改)")) {
+                                setTrip(data.trip_data);
+                            }
+                        }
                     }
                 }
-                setSyncStatus("done"); setTimeout(() => setSyncStatus("idle"), 2000);
+                setSyncStatus("done");
+                setTimeout(() => setSyncStatus("idle"), 2000);
             };
 
             const saveToCloud = async (currentTrip) => {
                 if (!user) return;
                 setSyncStatus("syncing");
-                const { error } = await supabase.from('trips').upsert({ user_id: user.id, trip_data: currentTrip, updated_at: new Date() });
-                if (error) setSyncStatus("error"); else { setSyncStatus("done"); setTimeout(() => setSyncStatus("idle"), 2000); }
+                const { error } = await supabase
+                    .from('trips')
+                    .upsert({ user_id: user.id, trip_data: currentTrip, updated_at: new Date() });
+                
+                if (error) {
+                    console.error("Cloud save failed:", error);
+                    setSyncStatus("error");
+                } else {
+                    setSyncStatus("done");
+                    setTimeout(() => setSyncStatus("idle"), 2000);
+                }
             };
 
             const handleAuth = async () => {
                 setAuthLoading(true);
                 if (isLoginMode) {
                     const { error } = await supabase.auth.signInWithPassword({ email: authEmail, password: authPass });
-                    if (error) alert(error.message); else { setIsModalOpen(false); alert("登入成功！行程將自動同步。"); }
+                    if (error) alert(error.message);
+                    else { setIsModalOpen(false); alert("登入成功！行程將自動同步。"); }
                 } else {
                     const { error } = await supabase.auth.signUp({ email: authEmail, password: authPass });
-                    if (error) alert(error.message); else { alert("註冊成功！請檢查 Email 驗證信。"); setIsLoginMode(true); }
+                    if (error) alert(error.message);
+                    else { alert("註冊成功！請檢查 Email 驗證信。"); setIsLoginMode(true); }
                 }
                 setAuthLoading(false);
             };
 
-            const handleLogout = async () => { await supabase.auth.signOut(); setUser(null); alert("已登出"); setIsModalOpen(false); };
+            const handleLogout = async () => {
+                await supabase.auth.signOut();
+                setUser(null);
+                alert("已登出");
+                setIsModalOpen(false);
+            };
 
+            // --- Interaction Handlers ---
             const handleInputChange = (e) => { setFormData({ ...formData, [e.target.name]: e.target.value }); setErrorMsg(""); };
             const handleDragStart = (e, pos) => { dragItem.current = pos; e.target.classList.add('dragging'); };
             const handleDragEnter = (e, pos) => { dragOverItem.current = pos; };
@@ -379,9 +426,11 @@
                 if (dragItem.current === undefined || dragOverItem.current === undefined || d1 === d2) return;
                 setTrip(prev => {
                     const newActs = prev.activities.map(a => a.day === d1 ? { ...a, day: d2 } : a.day === d2 ? { ...a, day: d1 } : a);
-                    const newAcc = { ...prev.accommodations }; const temp = newAcc[d1]; newAcc[d1] = newAcc[d2]; newAcc[d2] = temp;
+                    const newAcc = { ...prev.accommodations };
+                    const temp = newAcc[d1]; newAcc[d1] = newAcc[d2]; newAcc[d2] = temp;
                     const newExp = (prev.expenses || []).map(e => e.day === d1 ? { ...e, day: d2 } : e.day === d2 ? { ...e, day: d1 } : e);
-                    const newTitles = { ...prev.dayTitles }; const t = newTitles[d1]; newTitles[d1] = newTitles[d2]; newTitles[d2] = t;
+                    const newTitles = { ...prev.dayTitles };
+                    const t = newTitles[d1]; newTitles[d1] = newTitles[d2]; newTitles[d2] = t;
                     return { ...prev, activities: newActs, accommodations: newAcc, expenses: newExp, dayTitles: newTitles };
                 });
             };
@@ -427,8 +476,11 @@
             const deleteAccommodation = () => {
                 if(confirm("確定要移除" + (applyToRemaining ? "今天及後續天數的" : "今天的") + "住宿嗎？")) {
                     setTrip(prev => {
-                        const newAcc = { ...prev.accommodations }; delete newAcc[currentDay];
-                        if (applyToRemaining) for (let i = currentDay + 1; i <= prev.days; i++) delete newAcc[i];
+                        const newAcc = { ...prev.accommodations };
+                        delete newAcc[currentDay];
+                        if (applyToRemaining) {
+                            for (let i = currentDay + 1; i <= prev.days; i++) delete newAcc[i];
+                        }
                         return { ...prev, accommodations: newAcc };
                     });
                     setIsModalOpen(false);
@@ -459,6 +511,7 @@
                 setIsModalOpen(false);
             };
 
+            // Links handlers
             const addLink = () => setFormData(p => ({ ...p, links: [...p.links, { url: "", title: "" }] }));
             const removeLink = (idx) => setFormData(p => ({ ...p, links: p.links.filter((_, i) => i !== idx) }));
             const updateLink = (idx, field, val) => setFormData(p => ({ ...p, links: p.links.map((l, i) => i === idx ? { ...l, [field]: val } : l) }));
