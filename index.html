@@ -432,68 +432,39 @@
                 setTrip({ ...trip, activities: _acts });
             };
 
-            const handleDaySort = () => {
-                const fromIndex = dragItem.current;
-                const toIndex = dragOverItem.current;
-                
-                // Clear drag items first to prevent sticky state
-                dragItem.current = null;
-                dragOverItem.current = null;
-
-                if (fromIndex === undefined || fromIndex === null || toIndex === undefined || toIndex === null || fromIndex === toIndex) return;
-                
-                const fromDay = fromIndex + 1;
-                const toDay = toIndex + 1;
+            const moveDay = (day, direction, e) => {
+                e.stopPropagation();
+                const targetDay = day + direction;
+                if (targetDay < 1 || targetDay > trip.days) return;
 
                 setTrip(prev => {
-                    // Reordering Logic: Move fromDay to toDay, shifting others
-                    const getNewDay = (d) => {
-                        if (d === fromDay) return toDay;
-                        if (fromDay < toDay) {
-                            // Moving down: items between shift up (decrease index)
-                            // e.g. 1 -> 3.  2->1, 3->2.
-                            if (d > fromDay && d <= toDay) return d - 1;
-                        } else {
-                            // Moving up: items between shift down (increase index)
-                            // e.g. 3 -> 1. 1->2, 2->3.
-                            if (d >= toDay && d < fromDay) return d + 1;
-                        }
-                        return d;
-                    };
-
-                    // Safe checks for arrays and objects
-                    const prevActivities = prev.activities || [];
-                    const prevExpenses = prev.expenses || [];
-                    const prevAcc = prev.accommodations || {};
-                    const prevTitles = prev.dayTitles || {};
-
-                    // Update Activities
-                    const newActivities = prevActivities.map(a => ({ ...a, day: getNewDay(a.day) }));
+                    const newActivities = prev.activities.map(a => {
+                        if (a.day === day) return { ...a, day: targetDay };
+                        if (a.day === targetDay) return { ...a, day: day };
+                        return a;
+                    });
                     
-                    // Update Expenses
-                    const newExpenses = prevExpenses.map(e => ({ ...e, day: getNewDay(e.day) }));
+                    const newExpenses = (prev.expenses || []).map(e => {
+                        if (e.day === day) return { ...e, day: targetDay };
+                        if (e.day === targetDay) return { ...e, day: day };
+                        return e;
+                    });
 
-                    // Update Accommodations & Titles (Object keys are day numbers)
-                    const newAcc = {};
-                    const newTitles = {};
-                    
-                    // We must iterate through the range of days to rebuild the map
-                    for(let d = 1; d <= prev.days; d++) {
-                        const oldDataAcc = prevAcc[d];
-                        const oldDataTitle = prevTitles[d];
-                        const newD = getNewDay(d);
-                        
-                        if(oldDataAcc) newAcc[newD] = oldDataAcc;
-                        if(oldDataTitle) newTitles[newD] = oldDataTitle;
-                    }
+                    const newAcc = { ...prev.accommodations };
+                    const tempAcc = newAcc[day];
+                    newAcc[day] = newAcc[targetDay];
+                    newAcc[targetDay] = tempAcc;
+                    if (newAcc[day] === undefined) delete newAcc[day];
+                    if (newAcc[targetDay] === undefined) delete newAcc[targetDay];
 
-                    return { 
-                        ...prev, 
-                        activities: newActivities, 
-                        accommodations: newAcc, 
-                        expenses: newExpenses, 
-                        dayTitles: newTitles 
-                    };
+                    const newTitles = { ...prev.dayTitles };
+                    const tempTitle = newTitles[day];
+                    newTitles[day] = newTitles[targetDay];
+                    newTitles[targetDay] = tempTitle;
+                    if (newTitles[day] === undefined) delete newTitles[day];
+                    if (newTitles[targetDay] === undefined) delete newTitles[targetDay];
+
+                    return { ...prev, activities: newActivities, expenses: newExpenses, accommodations: newAcc, dayTitles: newTitles };
                 });
             };
 
@@ -682,12 +653,21 @@
                     <main className="max-w-4xl mx-auto p-4 md:flex gap-6 mt-4 pt-48">
                         {isSummaryView ? (
                             <div className="w-full space-y-6">
-                                <h2 className="text-xl font-bold px-2">行程總覽 (拖曳排序)</h2>
+                                <h2 className="text-xl font-bold px-2">行程總覽 (點擊箭頭移動)</h2>
                                 {Array.from({ length: trip.days }).map((_, i) => {
                                     const d = i + 1; const acts = trip.activities.filter(a => a.day === d); const acc = trip.accommodations?.[d];
                                     return (
-                                        <div key={d} draggable onDragStart={e => handleDragStart(e, i)} onDragEnter={e => handleDragEnter(e, i)} onDragEnd={e => {e.target.classList.remove('dragging'); handleDaySort();}} onDragOver={e=>e.preventDefault()} onClick={() => {setCurrentDay(d); setIsSummaryView(false);}} className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden cursor-pointer active:cursor-grabbing">
-                                            <div className="bg-slate-50 p-3 border-b flex justify-between"><div className="flex gap-2"><LucideIcon name="GripVertical" className="text-slate-400"/><h3 className="font-bold">{trip.dayTitles?.[d] || `Day ${d}`}</h3></div><span className="text-xs text-teal-600 bg-teal-50 px-2 py-1 rounded-full">詳細 &gt;</span></div>
+                                        <div key={d} onClick={() => {setCurrentDay(d); setIsSummaryView(false);}} className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden cursor-pointer active:scale-[0.99] transition-transform">
+                                            <div className="bg-slate-50 p-3 border-b flex justify-between items-center">
+                                                <div className="flex gap-2 items-center">
+                                                    <div className="flex flex-col gap-1 mr-2" onClick={e=>e.stopPropagation()}>
+                                                        {d > 1 && <button onClick={(e) => moveDay(d, -1, e)} className="p-1 bg-white border rounded hover:bg-slate-100 text-slate-500"><LucideIcon name="ArrowUp" size={12}/></button>}
+                                                        {d < trip.days && <button onClick={(e) => moveDay(d, 1, e)} className="p-1 bg-white border rounded hover:bg-slate-100 text-slate-500"><LucideIcon name="ArrowDown" size={12}/></button>}
+                                                    </div>
+                                                    <h3 className="font-bold text-lg">{trip.dayTitles?.[d] || `Day ${d}`}</h3>
+                                                </div>
+                                                <span className="text-xs text-teal-600 bg-teal-50 px-2 py-1 rounded-full">詳細 &gt;</span>
+                                            </div>
                                             <div className="p-4">
                                                 {acc?.title && <div className="mb-2 flex gap-2 text-sm text-indigo-600 bg-indigo-50 p-2 rounded"><LucideIcon name="Home" size={14}/><span className="truncate">{acc.title}</span></div>}
                                                 {acts.length ? acts.map(a => <div key={a.id} className="flex gap-2 text-sm items-center py-0.5"><span className="font-mono text-slate-400 text-xs w-10 shrink-0">{a.time}</span><div className={`w-2 h-2 rounded-full ${TYPE_CONFIG[a.type].color.split(' ')[0]}`}/> <span className="truncate">{a.title}</span></div>) : <p className="text-slate-400 text-sm italic">無行程</p>}
