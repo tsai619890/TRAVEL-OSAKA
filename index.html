@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+    <meta charset="UTF-8"><!DOCTYPE html>
+<html lang="zh-TW">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -210,11 +213,13 @@
             const [syncStatus, setSyncStatus] = useState("idle");
             const [showSavedToast, setShowSavedToast] = useState(false);
             
-            // Add Ref for debounce
+            // Add Ref for debounce & STALE STATE FIX
             const saveTimeoutRef = useRef(null);
+            const allTripsRef = useRef(allTrips); // Fix: Holds latest state
 
             // --- Persistence & Sync ---
             useEffect(() => {
+                allTripsRef.current = allTrips; // Fix: Always update ref on change
                 localStorage.setItem('travelApp_all_trips', JSON.stringify(allTrips));
                 
                 // Cloud Sync with Debounce (避免打字時頻繁上傳)
@@ -247,7 +252,7 @@
                     setUser(session?.user || null);
                     
                     // 修正：只在「剛登入」或「初始會話」時讀取
-                    // 這樣可以避免點擊連結(離開頁面)或切換視窗回來時觸發讀取
+                    // 注意：現在透過 Ref 確保不會因為變數過時而誤判
                     if (session?.user && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
                         loadFromCloud(session.user.id);
                     }
@@ -267,7 +272,8 @@
                         cloudData = { [id]: { ...cloudData, id } };
                     }
                     
-                    if (JSON.stringify(cloudData) !== JSON.stringify(allTrips)) {
+                    // Fix: Use Ref to compare with LATEST local data, not the one in closure
+                    if (JSON.stringify(cloudData) !== JSON.stringify(allTripsRef.current)) {
                         if (confirm("雲端有備份資料，是否下載覆蓋？")) {
                             setAllTrips(cloudData);
                         }
