@@ -435,6 +435,11 @@
             const handleDaySort = () => {
                 const fromIndex = dragItem.current;
                 const toIndex = dragOverItem.current;
+                
+                // Clear drag items first to prevent sticky state
+                dragItem.current = null;
+                dragOverItem.current = null;
+
                 if (fromIndex === undefined || fromIndex === null || toIndex === undefined || toIndex === null || fromIndex === toIndex) return;
                 
                 const fromDay = fromIndex + 1;
@@ -456,11 +461,17 @@
                         return d;
                     };
 
+                    // Safe checks for arrays and objects
+                    const prevActivities = prev.activities || [];
+                    const prevExpenses = prev.expenses || [];
+                    const prevAcc = prev.accommodations || {};
+                    const prevTitles = prev.dayTitles || {};
+
                     // Update Activities
-                    const newActivities = prev.activities.map(a => ({ ...a, day: getNewDay(a.day) }));
+                    const newActivities = prevActivities.map(a => ({ ...a, day: getNewDay(a.day) }));
                     
                     // Update Expenses
-                    const newExpenses = (prev.expenses || []).map(e => ({ ...e, day: getNewDay(e.day) }));
+                    const newExpenses = prevExpenses.map(e => ({ ...e, day: getNewDay(e.day) }));
 
                     // Update Accommodations & Titles (Object keys are day numbers)
                     const newAcc = {};
@@ -468,8 +479,8 @@
                     
                     // We must iterate through the range of days to rebuild the map
                     for(let d = 1; d <= prev.days; d++) {
-                        const oldDataAcc = prev.accommodations[d];
-                        const oldDataTitle = prev.dayTitles[d];
+                        const oldDataAcc = prevAcc[d];
+                        const oldDataTitle = prevTitles[d];
                         const newD = getNewDay(d);
                         
                         if(oldDataAcc) newAcc[newD] = oldDataAcc;
