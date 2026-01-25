@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+    <meta charset="UTF-8"><!DOCTYPE html>
+<html lang="zh-TW">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -319,8 +322,14 @@
                 setAllTrips(prev => ({ ...prev, [newId]: { ...source, id: newId, tripName: source.tripName + " (副本)" } }));
             }
 
+            // CRITICAL FIX: Ensure newData is handled correctly whether it's a function or value
             const updateActiveTrip = (newData) => {
-                setAllTrips(prev => ({ ...prev, [activeTripId]: newData }));
+                setAllTrips(prev => {
+                    const currentTripData = prev[activeTripId];
+                    // If newData is a function (functional update), call it with current state
+                    const updatedData = typeof newData === 'function' ? newData(currentTripData) : newData;
+                    return { ...prev, [activeTripId]: updatedData };
+                });
             };
 
             // Render Logic
@@ -386,8 +395,6 @@
 
         // --- Refactored Trip Editor (The original App logic) ---
         function TripEditor({ trip, setTrip, onBack, apiKey, setApiKey, user, syncStatus, showSavedToast }) {
-            const dragItem = useRef();
-            const dragOverItem = useRef();
             const fileInputRef = useRef(null);
 
             // View State
@@ -415,21 +422,9 @@
 
             // --- Interaction Handlers ---
             const handleInputChange = (e) => { setFormData({ ...formData, [e.target.name]: e.target.value }); setErrorMsg(""); };
-            const handleDragStart = (e, pos) => { dragItem.current = pos; e.target.classList.add('dragging'); };
-            const handleDragEnter = (e, pos) => { dragOverItem.current = pos; };
-            const handleDragEnd = (e) => { e.target.classList.remove('dragging'); dragItem.current = null; dragOverItem.current = null; };
 
             const handleActivitySort = () => {
-                let _acts = [...trip.activities];
-                const dayActs = _acts.filter(a => a.day === currentDay);
-                const draggedAct = dayActs[dragItem.current];
-                const overAct = dayActs[dragOverItem.current];
-                if (!draggedAct || !overAct || draggedAct === overAct) return;
-                const idx1 = _acts.findIndex(a => a.id === draggedAct.id);
-                const idx2 = _acts.findIndex(a => a.id === overAct.id);
-                const item = _acts.splice(idx1, 1)[0];
-                _acts.splice(idx2, 0, item);
-                setTrip({ ...trip, activities: _acts });
+                // Placeholder - Drag disabled
             };
 
             const moveDay = (day, direction, e) => {
@@ -715,7 +710,7 @@
                                             const tc = TYPE_CONFIG[item.type];
                                             const displayLinks = item.links && item.links.length > 0 ? item.links : (item.driveLink ? [{url: item.driveLink, title: '文件'}] : []);
                                             return (
-                                                <div key={item.id} draggable onDragStart={e => handleDragStart(e, idx)} onDragEnter={e => handleDragEnter(e, idx)} onDragEnd={e => {e.target.classList.remove('dragging'); handleDragEnd(e);}} onDragOver={e => {e.preventDefault(); handleActivitySort();}} className="relative z-10 flex gap-4 group cursor-move">
+                                                <div key={item.id} draggable={false} className="relative z-10 flex gap-4 group">
                                                     <div className="flex flex-col items-center pt-1"><div className={`bg-white p-1 rounded-full border shadow-sm ${tc.color.replace('bg-', 'text-')}`}><LucideIcon name={tc.icon}/></div><div className="mt-1 text-slate-300 md:hidden"><LucideIcon name="GripVertical" size={14}/></div></div>
                                                     <div className="flex-1 bg-white rounded-xl p-4 shadow-sm border relative overflow-hidden">
                                                         <div className={`absolute top-0 left-0 w-1 h-full ${tc.color.split(' ')[0].replace('bg-', 'bg-')}`}/>
@@ -993,5 +988,3 @@
 
         const root = ReactDOM.createRoot(document.getElementById('root')); root.render(<App />);
     </script>
-</body>
-</html>
